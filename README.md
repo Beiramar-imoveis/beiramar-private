@@ -14,7 +14,7 @@ Site estático (HTML, CSS e JS), sem WordPress, pronto para o GitHub Pages.
 | `js/private.js` | Menu, filtros, carrossel, galeria e formulário |
 | `js/consentimento.js` | Aviso de cookies (LGPD) e carregamento do Analytics/Clarity |
 | `imagens/empreendimentos/<slug>/` | `capa.webp` + fotos da galeria `01.webp`, `02.webp`… (versões `-p` são as reduzidas) |
-| `imagens/site/` | Imagens institucionais e a logo vetorizada (`logo-beiramar.svg`) |
+| `imagens/site/` | Imagens institucionais e a logo original (`logo-beiramar-private.png`, sem alterações) |
 
 As páginas `index.html` de cada pasta são **geradas**: edite os dados e rode o gerador, não o HTML.
 

@@ -136,12 +136,8 @@ em,.serif{
 /* Só o canto, sem o contorno — para usar sobre fotos */
 .moldura--canto{border-color:transparent}
 
-/* Assinatura: logo Beiramar dentro da moldura */
-.assinatura{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:var(--a-pad,.9em 1.2em .75em);color:var(--branco);line-height:0;
-}
-.assinatura svg{width:100%;height:auto}
+/* Logo original da Beiramar Private (arquivo oficial) */
+.assinatura{display:block;height:auto;max-width:100%}
 
 /* =========================================================================
    GRAFISMO 2 — DEGRADÊ EM FAIXAS
@@ -184,10 +180,8 @@ em,.serif{
 .topo.rolado{background:rgba(19,20,21,.94);border-bottom-color:var(--linha);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .topo.rolado .wrap{height:72px}
 .marca{display:flex;align-items:center;gap:18px;color:var(--branco)}
-.marca .assinatura{--a-pad:9px 12px 7px;width:132px}
-.marca .moldura{--m-linha:1.5px;--m-canto:6px}
-.marca__nome{font-size:10.5px;font-weight:500;letter-spacing:.42em;text-transform:uppercase;color:var(--cinza-claro);line-height:1.5}
-.topo.rolado .marca .assinatura{width:118px}
+.marca .assinatura{width:118px;transition:width .4s}
+.topo.rolado .marca .assinatura{width:104px}
 
 .nav{display:flex;align-items:center;gap:34px}
 .nav a{position:relative;font-size:13.5px;font-weight:400;letter-spacing:.06em;color:rgba(255,255,255,.82);transition:color .3s}
@@ -205,7 +199,6 @@ em,.serif{
 @media(max-width:960px){
   .nav{display:none}
   .nav-toggle{display:inline-flex}
-  .marca__nome{display:none}
   html.menu-aberto,html.menu-aberto body{overflow:hidden}
   .topo.aberto{background:var(--preto);border-bottom-color:var(--linha)}
   .topo.aberto .nav-toggle{background:var(--branco);color:var(--preto);border-color:var(--branco)}
@@ -442,8 +435,7 @@ em,.serif{
 
 /* bloco institucional Private */
 .institucional{display:grid;grid-template-columns:auto 1fr;gap:clamp(40px,6vw,96px);align-items:center}
-.institucional .assinatura{width:clamp(200px,22vw,300px);--a-pad:1.6em 1.9em 1.35em}
-.institucional .moldura{--m-linha:2px;--m-canto:14px}
+.institucional .assinatura{width:clamp(200px,22vw,300px)}
 @media(max-width:820px){.institucional{grid-template-columns:1fr}}
 
 /* ---------- contato ---------- */
@@ -482,8 +474,7 @@ em,.serif{
 /* ---------- rodapé ---------- */
 .rodape{background:#0D0E0F;padding:clamp(72px,8vw,110px) 0 36px;border-top:1px solid var(--linha)}
 .rodape__topo{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:48px}
-.rodape .assinatura{width:180px;--a-pad:14px 18px 11px}
-.rodape .moldura{--m-linha:1.5px;--m-canto:8px}
+.rodape .assinatura{width:170px}
 .rodape__frase{margin-top:30px;max-width:300px;font-size:20px;font-weight:300;line-height:1.35}
 .rodape h4{font-size:11px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--cinza);margin-bottom:20px}
 .rodape ul{list-style:none;display:grid;gap:12px}

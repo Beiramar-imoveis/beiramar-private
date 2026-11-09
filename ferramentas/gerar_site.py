@@ -36,9 +36,6 @@ REGIOES = {r["slug"]: r for r in DADOS["regioes"]}
 EMPS = [e for e in DADOS["empreendimentos"] if e.get("ativo", True)]
 EMP = {e["slug"]: e for e in EMPS}
 
-LOGO_SVG = (RAIZ / "imagens" / "site" / "logo-beiramar.svg").read_text(encoding="utf-8")
-LOGO_VIEWBOX = LOGO_SVG.split('viewBox="')[1].split('"')[0]
-LOGO_PATH = LOGO_SVG.split(' d="')[1].split('"')[0]
 
 geradas = []  # caminhos para o sitemap
 
@@ -58,14 +55,10 @@ def seta():
             '<path d="M0 6h62M57 1l5 5-5 5"/></svg>')
 
 
-def logo(classe=""):
-    return (f'<svg class="{classe}" viewBox="{LOGO_VIEWBOX}" role="img" aria-label="Beiramar">'
-            f'<use href="#logo-beiramar"/></svg>')
-
-
-def assinatura(extra=""):
-    """Logo Beiramar dentro da moldura (grafismo 1)."""
-    return f'<span class="assinatura moldura {extra}">{logo()}</span>'
+def assinatura(r):
+    """Logo original da Beiramar Private (arquivo oficial, sem alterações)."""
+    return (f'<img class="assinatura" src="{r}imagens/site/logo-beiramar-private.png" '
+            f'alt="Beiramar Private" width="716" height="428">')
 
 
 ICONES = {
@@ -129,7 +122,6 @@ def head(r, titulo, descricao, caminho, imagem_og="compartilhamento.jpg", noinde
 {extra}
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="logo-beiramar" viewBox="{LOGO_VIEWBOX}"><path fill-rule="evenodd" fill="currentColor" d="{LOGO_PATH}"/></symbol></svg>
 """
 
 
@@ -148,7 +140,7 @@ def topo(r, atual="", lp=False):
                             f'aria-label="Abrir menu">{MENU_ICONE}</button>')
     return f"""<header class="topo" id="topo">
   <div class="wrap">
-    <a href="{r}" class="marca" aria-label="Beiramar Private — início">{assinatura()}<span class="marca__nome">Private</span></a>
+    <a href="{r}" class="marca" aria-label="Beiramar Private — início">{assinatura(r)}</a>
     {nav}
     {toggle}
   </div>
@@ -163,7 +155,7 @@ def rodape(r):
   <div class="wrap">
     <div class="rodape__topo">
       <div>
-        <a href="{r}" aria-label="Beiramar Private — início">{assinatura()}</a>
+        <a href="{r}" aria-label="Beiramar Private — início">{assinatura(r)}</a>
         <p class="rodape__frase">A frente de alto padrão da <em>Beiramar</em> no Plano Piloto.</p>
       </div>
       <div><h4>Noroeste</h4><ul>{noroeste}</ul></div>
@@ -261,7 +253,7 @@ def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', text
 def institucional(r):
     return f"""<section class="secao secao--compacta secao--2">
   <div class="wrap institucional revelar">
-    {assinatura()}
+    {assinatura(r)}
     <div>
       <span class="rotulo rotulo--linha">Beiramar Private</span>
       <p class="subtitulo" style="margin:20px 0 18px;max-width:760px">A frente de alto padrão da Beiramar, dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília.</p>
