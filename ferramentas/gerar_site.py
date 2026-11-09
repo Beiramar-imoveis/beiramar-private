@@ -122,7 +122,8 @@ def head(r, titulo, descricao, caminho, imagem_og="compartilhamento.jpg", noinde
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="preload" href="{r}fontes/didot-italic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{r}css/consentimento.css">
 <link rel="stylesheet" href="{r}css/private.css">
 {extra}

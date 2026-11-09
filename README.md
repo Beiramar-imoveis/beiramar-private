@@ -33,7 +33,7 @@ python3 ferramentas/gerar_site.py
 ## Identidade visual
 
 - **Cor:** Preto Private `#131415` dominante, com branco e cinzas neutros.
-- **Tipografia:** DM Sans (mesma família dos sites do Grupo). Destaques em itálico serifado com **Bodoni Moda Italic**, a alternativa web gratuita mais próxima da Didot Italic usada nos posts. Para usar a Didot original no site é preciso licença web da fonte.
+- **Tipografia:** DM Sans (mesma família dos sites do Grupo). Destaques em **Didot Italic** (`fontes/didot-italic.woff2`), a mesma dos posts.
 - **Grafismos, como elementos independentes (CSS):**
   - `.moldura`: contorno fino com o canto em L deslocado no ângulo superior direito (proporções medidas na assinatura original). Variações: `.moldura--inferior`, `.moldura--canto`; ajuste com `--m-linha`, `--m-canto`, `--m-larg`, `--m-alt`.
   - `.faixas`: degradê em faixas que funde a foto no preto, aplicado por máscara sobre qualquer imagem limpa. Direções: `--esq` (padrão), `--dir`, `--topo`, `--base`.
