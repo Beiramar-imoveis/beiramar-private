@@ -211,6 +211,24 @@
     });
   });
 
+  /* ---------- barra de navegação do empreendimento: destaca a seção em leitura ---------- */
+  var subnav = document.querySelector('.subnav');
+  if (subnav && 'IntersectionObserver' in window) {
+    var links = Array.prototype.slice.call(subnav.querySelectorAll('.subnav__links a'));
+    var faixa = subnav.querySelector('.subnav__links');
+    var spy = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (l) {
+          var ativo = l.getAttribute('href') === '#' + en.target.id;
+          l.classList.toggle('ativo', ativo);
+          if (ativo && faixa.scrollWidth > faixa.clientWidth) faixa.scrollTo({ left: l.offsetLeft - 20, behavior: 'smooth' });
+        });
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    links.forEach(function (l) { var alvo = document.querySelector(l.getAttribute('href')); if (alvo) spy.observe(alvo); });
+  }
+
   /* ---------- página de obrigado: botão do WhatsApp com a mensagem do formulário ---------- */
   var botaoWhats = document.querySelector('[data-whats-obrigado]');
   if (botaoWhats) {

@@ -200,7 +200,7 @@ em,.serif{
 /* seletor de idioma (PT / EN) */
 .nav .nav-idioma{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 10px;border:1px solid var(--linha-forte);border-radius:50%;font-size:11.5px;font-weight:600;letter-spacing:.12em;margin-right:-14px}
 .nav .nav-idioma:hover{opacity:1;background:var(--branco);color:var(--preto);text-shadow:none}
-.nav-idioma__longo{display:none}
+.nav-idiomas{display:none}
 
 /* ---------- menu do celular e tablet ----------
    Mesmo modelo dos sites do Grupo Beiramar e da BRM Asset: botão redondo (☰ ↔ ✕),
@@ -248,8 +248,14 @@ em,.serif{
     background:none;opacity:.45;transform:rotate(45deg);transition:none;
   }
   .topo.aberto .nav a[aria-current="page"]::after{opacity:1}
-  .topo.aberto .nav .nav-idioma .nav-idioma__curto{display:none}
-  .topo.aberto .nav .nav-idioma .nav-idioma__longo{display:inline}
+  /* idiomas no fim do painel, como no site da BRM Asset: PT · EN */
+  .topo.aberto .nav .nav-idioma{display:none}
+  .topo.aberto .nav .nav-idiomas{display:flex;align-items:center;gap:18px;margin-top:34px;padding:0 4px;font-size:20px;font-weight:500;letter-spacing:.06em}
+  .topo.aberto .nav .nav-idiomas a{display:inline;padding:0;border:0;font-size:20px;font-weight:500;color:#8A8C8F!important}
+  .topo.aberto .nav .nav-idiomas a::after{display:none}
+  .topo.aberto .nav .nav-idiomas a:hover{color:#131415!important}
+  .nav-idiomas__atual{color:#131415;font-weight:700}
+  .nav-idiomas__sep{color:#8A8C8F;font-size:16px}
   /* "Falar com um especialista" vira o botão de destaque no fim do painel */
   .topo.aberto .nav .nav-cta{
     margin-top:28px;padding:18px 22px;border:0;border-radius:2px;
@@ -437,14 +443,37 @@ em,.serif{
 @media(max-width:1020px){.trilho{--por-tela:2;--gap:20px}}
 @media(max-width:620px){.trilho{--por-tela:1.15;--gap:14px}}
 
+/* ---------- barra de navegação da página do empreendimento ---------- */
+.subnav{position:sticky;top:72px;z-index:80;background:rgba(19,20,21,.96);border-bottom:1px solid var(--linha);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.subnav .wrap{display:flex;align-items:center;gap:32px;height:58px}
+.subnav__nome{font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.subnav__links{display:flex;gap:28px;flex:1;overflow-x:auto;scrollbar-width:none}
+.subnav__links::-webkit-scrollbar{display:none}
+.subnav__links a{position:relative;font-size:13.5px;color:var(--cinza-claro);white-space:nowrap;padding:6px 0;transition:color .3s}
+.subnav__links a:hover,.subnav__links a.ativo{color:var(--branco)}
+.subnav__links a.ativo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor}
+.subnav__cta{padding:10px 16px;border:1px solid var(--linha-forte);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;transition:all .3s}
+.subnav__cta:hover{background:var(--branco);color:var(--preto)}
+@media(max-width:960px){
+  .subnav{top:76px}
+  .subnav .wrap{height:52px;gap:0;padding-right:0}
+  .subnav__nome,.subnav__cta{display:none}
+  .subnav__links{gap:24px;padding-right:var(--gutter);-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+}
+main section[id]{scroll-margin-top:72px}
+main:has(.subnav) section[id]{scroll-margin-top:128px}
+
+/* destaques que não podem quebrar linha (ex.: "45 anos") */
+.sem-quebra{white-space:nowrap}
+
 /* ---------- ecossistema Beiramar ---------- */
 .ecossistema{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(48px,7vw,120px);align-items:center}
 .frentes{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.4vw,18px)}
 .frente{padding:clamp(24px,2.4vw,34px);background:var(--preto-2);display:flex;flex-direction:column;gap:12px}
 .frente h3{font-size:19px;font-weight:600;letter-spacing:.01em}
 .frente p{font-size:14.5px;line-height:1.6;color:var(--cinza-claro);font-weight:300}
-.frente--destaque{background:#131415;color:#FDFDFD}
-.frente--destaque p{color:#C9CBCE}
+.frente--destaque{background:var(--branco);color:var(--preto)}
+.frente--destaque p{color:var(--preto);opacity:.78}
 @media(max-width:900px){.ecossistema{grid-template-columns:1fr}}
 @media(max-width:520px){.frentes{grid-template-columns:1fr}}
 
@@ -628,4 +657,24 @@ em,.serif{
   .revelar{opacity:1;transform:none;transition:none}
   .rolar span,.topo.aberto .nav{animation:none}
   *{transition-duration:.01ms !important}
+}
+
+/* ---------- eyebrows (rótulos) no celular: menores e sempre em uma linha ---------- */
+@media(max-width:620px){
+  .rotulo{font-size:10.5px;letter-spacing:.24em;gap:10px;white-space:nowrap;max-width:100%}
+  .rotulo--linha::before{width:22px;flex-shrink:0}
+  .card__regiao{font-size:10px;letter-spacing:.22em;white-space:nowrap}
+}
+@media(max-width:380px){
+  .rotulo{letter-spacing:.18em}
+}
+
+/* ---------- botões no celular: sempre em uma linha ---------- */
+.btn{white-space:nowrap}
+@media(max-width:620px){
+  .btn{padding:16px 20px;gap:14px;font-size:12px;letter-spacing:.16em}
+  .btn .seta{width:32px}
+}
+@media(max-width:380px){
+  .btn{letter-spacing:.12em;padding:15px 16px}
 }
