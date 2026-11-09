@@ -197,10 +197,13 @@ em,.serif{
 .nav .nav-cta{padding:12px 18px;border:1px solid var(--branco);background:rgba(19,20,21,.35);text-shadow:none;font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase}
 .nav .nav-cta:hover{background:var(--branco);color:var(--preto)}
 
-/* seletor de idioma (PT / EN) */
-.nav .nav-idioma{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 10px;border:1px solid var(--linha-forte);border-radius:50%;font-size:11.5px;font-weight:600;letter-spacing:.12em;margin-right:-14px}
-.nav .nav-idioma:hover{opacity:1;background:var(--branco);color:var(--preto);text-shadow:none}
-.nav-idiomas{display:none}
+/* seletor de idioma: PT · EN, com o idioma atual em destaque (mesmo padrão do site da BRM Asset) */
+.nav-idiomas{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;letter-spacing:.12em;text-shadow:0 1px 12px rgba(0,0,0,.45);margin-right:-10px}
+.nav-idiomas__atual{color:var(--branco);font-weight:700}
+.nav .nav-idiomas a{color:var(--cinza-claro);font-weight:500}
+.nav .nav-idiomas a::after{display:none}
+.nav .nav-idiomas a:hover{color:var(--branco);opacity:1}
+.nav-idiomas__sep{color:var(--cinza);font-size:11px}
 
 /* ---------- menu do celular e tablet ----------
    Mesmo modelo dos sites do Grupo Beiramar e da BRM Asset: botão redondo (☰ ↔ ✕),
@@ -249,8 +252,7 @@ em,.serif{
   }
   .topo.aberto .nav a[aria-current="page"]::after{opacity:1}
   /* idiomas no fim do painel, como no site da BRM Asset: PT · EN */
-  .topo.aberto .nav .nav-idioma{display:none}
-  .topo.aberto .nav .nav-idiomas{display:flex;align-items:center;gap:18px;margin-top:34px;padding:0 4px;font-size:20px;font-weight:500;letter-spacing:.06em}
+  .topo.aberto .nav .nav-idiomas{display:flex;order:99;text-shadow:none;margin-right:0;align-items:center;gap:18px;margin-top:34px;padding:0 4px;font-size:20px;font-weight:500;letter-spacing:.06em}
   .topo.aberto .nav .nav-idiomas a{display:inline;padding:0;border:0;font-size:20px;font-weight:500;color:#8A8C8F!important}
   .topo.aberto .nav .nav-idiomas a::after{display:none}
   .topo.aberto .nav .nav-idiomas a:hover{color:#131415!important}
@@ -675,4 +677,17 @@ main:has(.subnav) section[id]{scroll-margin-top:128px}
 }
 @media(max-width:380px){
   .btn{letter-spacing:.12em;padding:15px 16px}
+}
+
+/* ---------- menu em telas médias (notebooks pequenos e tablets na horizontal) ---------- */
+.nav a{white-space:nowrap}
+@media(max-width:1240px) and (min-width:961px){
+  .nav{gap:22px}
+  .nav a{font-size:13px;letter-spacing:.02em}
+  .nav .nav-cta{padding:11px 14px;font-size:10.5px;letter-spacing:.14em}
+  .marca .assinatura{width:100px}
+}
+@media(max-width:1060px) and (min-width:961px){
+  .nav{gap:16px}
+  .topo .wrap{gap:16px}
 }

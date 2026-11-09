@@ -237,7 +237,7 @@ def topo(r, b, par, atual="", lp=False, eco_local=True):
                  ("grupo", "#ecossistema" if eco_local else f"{b}#ecossistema", "Grupo Beiramar")]
         links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if k == atual else ""}>{tx}</a>' for k, h, tx in itens)
         botao, lista = idioma_link(r, par)
-        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{links}{botao}{cta}{lista}</nav>'
+        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{links}{lista}{cta}</nav>'
     toggle = "" if lp else (f'<button class="nav-toggle" type="button" aria-controls="nav" aria-expanded="false" '
                             f'aria-label="{t("Abrir menu", "Open menu")}">{MENU_ICONE}</button>')
     return f"""<header class="topo" id="topo">
