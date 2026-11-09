@@ -27,6 +27,7 @@
   --cinza:#8A8C8F;          /* texto secundário sobre escuro */
   --cinza-claro:#B9BBBE;
   --nevoa:#EDEDED;          /* fundos claros */
+  --btn-hover:#DCDDDE;      /* botão principal ao passar o mouse (sobre o preto) */
   --papel:#FDFDFD;
   --branco:#FDFDFD;          /* Branco Private — segunda cor da paleta (sem branco puro) */
   --linha:rgba(253,253,253,.14);
@@ -105,7 +106,8 @@ em,.serif{
 .btn:hover .seta{transform:translateX(6px)}
 .btn .seta{width:40px}
 .btn-claro{background:var(--branco);color:var(--preto)}
-.btn-claro:hover{background:var(--nevoa)}
+.btn-claro:hover{background:var(--btn-hover);color:var(--preto)}
+.btn-claro:focus-visible{outline:2px solid var(--branco);outline-offset:3px}
 .btn-linha{border-color:var(--linha-forte);color:var(--branco);background:transparent}
 .btn-linha:hover{border-color:var(--branco);background:var(--vidro)}
 .btn-escuro{background:var(--preto);color:var(--branco)}
@@ -320,6 +322,7 @@ em,.serif{
    Inverte os tokens: todos os componentes funcionam nos dois fundos sem ajustes.
    ========================================================================= */
 .tema-claro{
+  --btn-hover:#3A3C3F;
   --preto:#FDFDFD;--preto-2:#F3F3F3;--preto-3:#EBEBEB;
   --branco:#131415;--cinza:#77797C;--cinza-claro:#4C4E51;
   --linha:rgba(19,20,21,.12);--linha-media:rgba(19,20,21,.26);--linha-forte:rgba(19,20,21,.45);
