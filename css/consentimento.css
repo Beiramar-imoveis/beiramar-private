@@ -1,0 +1,102 @@
+/* Aviso e preferências de cookies + links legais do rodapé — Grupo Beiramar
+   Usa a paleta oficial (variáveis do :root das páginas), com valores de reserva. */
+
+/* ---------- aviso (cartão flutuante) ---------- */
+.gb-cookie{
+  position:fixed;left:24px;bottom:24px;z-index:300;
+  width:min(440px,calc(100vw - 48px));
+  background:#fff;color:var(--text,#0E2136);
+  border:1px solid var(--line,rgba(0,69,140,.15));border-top:3px solid var(--royal-soft,#1CA3E0);
+  border-radius:4px;padding:24px 26px 22px;
+  box-shadow:0 28px 60px -24px rgba(0,49,104,.38),0 2px 8px rgba(0,49,104,.06);
+  font-family:var(--body,"DM Sans",system-ui,sans-serif);
+  animation:gb-cookie-in .6s cubic-bezier(.22,.61,.36,1) both .5s;
+}
+.gb-cookie[hidden]{display:none}
+@keyframes gb-cookie-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.gb-cookie__eyebrow{
+  margin:0 0 10px;font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--royal,#1D63FF);display:flex;align-items:center;gap:10px;
+}
+.gb-cookie__eyebrow::before{content:"";width:22px;height:1px;background:currentColor;opacity:.6}
+.gb-cookie__text{margin:0;font-size:14px;line-height:1.6;color:var(--text-soft,#496585)}
+.gb-cookie__text a{color:var(--navy,#00458C);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.gb-cookie__actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;margin-top:18px}
+
+/* ---------- botões ---------- */
+.gb-btn{
+  font-family:inherit;font-size:14px;font-weight:600;line-height:1;
+  padding:12px 18px;border-radius:2px;cursor:pointer;
+  transition:background-color .3s,border-color .3s,color .3s,transform .3s;
+}
+.gb-btn:focus-visible{outline:2px solid var(--royal-soft,#1CA3E0);outline-offset:2px}
+.gb-btn--solid{background:var(--navy,#00458C);border:1px solid var(--navy,#00458C);color:#fff}
+.gb-btn--solid:hover{background:var(--royal,#1D63FF);border-color:var(--royal,#1D63FF);transform:translateY(-1px)}
+.gb-btn--outline{background:transparent;border:1px solid var(--line,rgba(0,69,140,.15));color:var(--navy,#00458C)}
+.gb-btn--outline:hover{border-color:var(--navy,#00458C);background:var(--mist,#EEF5FF)}
+.gb-btn--link{background:none;border:1px solid transparent;color:var(--text-soft,#496585);text-decoration:underline;text-underline-offset:3px;margin-right:auto;padding-left:0}
+.gb-btn--link:hover{color:var(--navy,#00458C)}
+
+/* ---------- painel de preferências ---------- */
+.gb-cookie-dialog{
+  width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);
+  margin:auto;padding:0;border:0;border-radius:6px;
+  background:#fff;color:var(--text,#0E2136);
+  box-shadow:0 40px 90px -30px rgba(0,49,104,.5);
+  font-family:var(--body,"DM Sans",system-ui,sans-serif);
+}
+.gb-cookie-dialog::backdrop{background:rgba(0,49,104,.35);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.gb-cookie-dialog[open]{animation:gb-cookie-in .4s cubic-bezier(.22,.61,.36,1) both}
+.gb-cookie-dialog__form{padding:28px;border-top:3px solid var(--royal-soft,#1CA3E0)}
+.gb-cookie-dialog__head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.gb-cookie-dialog__head h2{margin:0;font-size:24px;font-weight:500;letter-spacing:-.01em;line-height:1.15;color:var(--navy,#00458C)}
+.gb-cookie-close{
+  flex-shrink:0;width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:50%;background:var(--mist,#EEF5FF);color:var(--navy,#00458C);cursor:pointer;transition:background-color .3s;
+}
+.gb-cookie-close:hover{background:#DDEAFB}
+.gb-cookie-dialog__intro{margin:12px 0 10px;font-size:14px;line-height:1.6;color:var(--text-soft,#496585)}
+.gb-cookie-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 0;border-top:1px solid var(--line,rgba(0,69,140,.15))}
+.gb-cookie-row strong{font-size:15px;font-weight:600;color:var(--navy,#00458C)}
+.gb-cookie-row p{margin:4px 0 0;font-size:13px;line-height:1.55;color:var(--text-soft,#496585)}
+.gb-cookie-always{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--royal-soft,#1CA3E0)}
+.gb-switch{position:relative;flex-shrink:0;width:48px;height:28px}
+.gb-switch input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer;z-index:1}
+.gb-switch span{position:absolute;inset:0;border-radius:999px;background:#C9D9EE;transition:background-color .3s}
+.gb-switch span::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,49,104,.22);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+.gb-switch input:checked + span{background:var(--royal,#1D63FF)}
+.gb-switch input:checked + span::after{transform:translateX(20px)}
+.gb-switch input:focus-visible + span{outline:2px solid var(--royal-soft,#1CA3E0);outline-offset:3px}
+.gb-cookie-dialog__link{margin:4px 0 20px;font-size:13px}
+.gb-cookie-dialog__link a{color:var(--navy,#00458C);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.gb-cookie-dialog__actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+
+/* ---------- confirmação ---------- */
+.gb-cookie-toast{
+  position:fixed;left:50%;bottom:24px;z-index:310;transform:translate(-50%,16px);
+  padding:12px 20px;border-radius:2px;background:var(--navy,#00458C);color:#fff;
+  font-family:var(--body,"DM Sans",system-ui,sans-serif);font-size:14px;font-weight:500;
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;
+}
+.gb-cookie-toast.is-visible{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- links legais do rodapé ---------- */
+.foot-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px}
+.foot-legal{display:flex;flex-wrap:wrap;gap:6px 20px}
+.foot-legal a{color:#9DB0CA;font-size:13px;transition:color .3s}
+.foot-legal a:hover{color:#fff}
+
+/* ---------- aviso de privacidade do formulário ---------- */
+.form-privacy{font-size:12.5px;line-height:1.55;color:var(--text-soft,#496585);margin-top:14px;text-align:center}
+.form-privacy a{color:var(--navy,#00458C);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+@media(max-width:560px){
+  .gb-cookie{left:12px;right:12px;bottom:12px;width:auto;padding:20px}
+  .gb-cookie__actions{display:grid;grid-template-columns:1fr 1fr}
+  .gb-cookie__actions .gb-btn--link{grid-column:1/-1;order:3;margin:0;padding:8px 0 0;text-align:center}
+  .gb-cookie-dialog__form{padding:22px}
+  .gb-cookie-dialog__actions{display:grid;grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .gb-cookie,.gb-cookie-dialog[open]{animation:none}
+}

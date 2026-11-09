@@ -1,0 +1,359 @@
+{
+  "_leia-me": "Dados dos empreendimentos da Beiramar Private. Para incluir, editar ou retirar um empreendimento, altere este arquivo e rode: python3 ferramentas/gerar_site.py. As fotos ficam em imagens/empreendimentos/<slug>/ (capa.webp e 01.webp, 02.webp...). Use 'ativo': false para tirar um empreendimento do site sem apagar os dados.",
+  "regioes": [
+    {
+      "slug": "noroeste",
+      "nome": "Noroeste",
+      "rotulo": "Noroeste",
+      "titulo": "Noroeste:",
+      "titulo_destaque": "um novo padrão de <em>viver</em> Brasília.",
+      "subtitulo": "Curadoria Private de imóveis selecionados no bairro mais desejado do Plano Piloto.",
+      "intro_titulo": "Um dos bairros mais valorizados e planejados do Plano Piloto",
+      "intro": [
+        "Uma região que reúne arquitetura contemporânea, áreas verdes e mobilidade estratégica, com acesso facilitado aos principais eixos da cidade.",
+        "Com perfil residencial consolidado e alta demanda, o setor oferece imóveis que combinam qualidade de vida, conforto e potencial de valorização ao longo do tempo."
+      ],
+      "diferenciais": [
+        ["Bairro planejado e sustentável", "Concebido do zero, com áreas verdes, ciclovias e infraestrutura pensada para o morar contemporâneo."],
+        ["Arquitetura contemporânea", "Projetos assinados, fachadas marcantes e plantas amplas, em sintonia com o modernismo de Brasília."],
+        ["Qualidade de vida residencial", "Parques, comércio de vizinhança e ritmo de bairro, a poucos minutos dos eixos centrais."],
+        ["Valorização e alta liquidez", "Um bairro de oferta cada vez mais escassa, com demanda que se mantém em alta."]
+      ],
+      "imagem": "noroeste"
+    },
+    {
+      "slug": "quadra-500",
+      "nome": "Quadra 500 · Sudoeste",
+      "rotulo": "Quadra 500",
+      "titulo": "Quadra 500:",
+      "titulo_destaque": "um endereço que <em>não se repete</em>.",
+      "subtitulo": "Curadoria Private de imóveis selecionados na última faixa do Sudoeste, de frente para o verde.",
+      "intro_titulo": "Onde Brasília já provou que valoriza",
+      "intro": [
+        "A Quadra 500 do Sudoeste representa um dos movimentos mais nobres do alto padrão em Brasília: um endereço raro, de baixa densidade, pensado para quem valoriza espaço, privacidade e qualidade de vida real.",
+        "Localizada na última faixa do Sudoeste, voltada ao Parque das Sucupiras, a Quadra 500 tem um diferencial que não se replica: vista livre para a natureza, baixa interferência urbana e atmosfera residencial nobre. Metragens generosas, poucas unidades e alto nível construtivo fazem dela uma escolha patrimonial, para quem entende que exclusividade, localização e escassez são os verdadeiros pilares da valorização."
+      ],
+      "diferenciais": [
+        ["Endereço raro no Sudoeste", "A última faixa do bairro, com baixa densidade e poucas unidades por projeto."],
+        ["Segurança 24 horas", "Central de monitoramento que acompanha a quadra dia e noite."],
+        ["Integração com a natureza", "De frente para o Parque das Sucupiras, com vista livre para o verde."],
+        ["Valorização imobiliária", "Escassez de terrenos e padrão construtivo elevado sustentam o valor no longo prazo."]
+      ],
+      "imagem": "quadra-500"
+    }
+  ],
+  "numeros_noroeste": {
+    "titulo": "Os números não mentem",
+    "destaque": "O Noroeste já vendeu <em>94%</em> do que lançou.",
+    "itens": [
+      ["13.188 unidades lançadas em 169 empreendimentos.", "12.406 já vendidas."],
+      ["Restam só", "782 unidades em oferta."],
+      ["No 1º semestre de 2026, o Noroeste liderou as vendas de imóveis novos no DF:", "402 unidades, +44% sobre o período anterior."]
+    ],
+    "fonte": ""
+  },
+  "empreendimentos": [
+    {
+      "slug": "yard",
+      "ativo": true,
+      "nome": "Yard",
+      "regiao": "noroeste",
+      "incorporadora": "Soltec Engenharia",
+      "status": "Pronto para morar",
+      "chamada": "Pronto para <em>morar</em>, do térreo à cobertura.",
+      "metragem": "110 a 224 m²",
+      "dormitorios": "3 quartos",
+      "descricao": [
+        "Um empreendimento premium no Noroeste, com arquitetura contemporânea e plantas desenhadas para fazer a vida fluir com naturalidade. Apartamentos de 3 quartos e coberturas duplex, com foco em conforto, desempenho e acabamento de alto padrão.",
+        "Do térreo à cobertura, o lazer se distribui para diferentes momentos do dia, com áreas entregues equipadas e decoradas. A fachada é 100% revestida em granito, e o projeto reúne assinatura de arquitetura, interiores e paisagismo."
+      ],
+      "assinaturas": [["Arquitetura", "Gomes Figueiredo"], ["Interiores", "Lie Arquitetura"], ["Paisagismo", "Fábio Camargo"]],
+      "unidades": [
+        {"titulo": "Apartamentos", "itens": ["3 quartos (1 suíte)", "110 a 135 m²", "2 a 4 vagas"]},
+        {"titulo": "Coberturas duplex", "itens": ["224 a 275 m²", "2 a 4 vagas"]}
+      ],
+      "nota": "Fachada 100% em granito e áreas comuns entregues equipadas e decoradas.",
+      "endereco": "SQNW 305, Bloco H · Noroeste",
+      "mapa": "https://www.google.com/maps?q=Yard%20Noroeste%20Bras%C3%ADlia%20DF&z=16",
+      "galeria": 10,
+      "antigos": ["yard"]
+    },
+    {
+      "slug": "azzure",
+      "ativo": true,
+      "nome": "Azzure",
+      "regiao": "noroeste",
+      "incorporadora": "",
+      "status": "",
+      "chamada": "Quatro suítes, duas varandas e <em>luz</em> natural em todos os ambientes.",
+      "metragem": "213 a 481 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Azzure é um empreendimento premium e contemporâneo no coração do Setor Noroeste, concebido para elevar a experiência residencial a um novo patamar de conforto, amplitude e exclusividade.",
+        "Com arquitetura inteligente e plantas impecáveis, cada detalhe foi pensado para garantir ventilação cruzada, iluminação natural abundante e fluidez entre os ambientes. O projeto contempla apenas unidades de alto padrão com 4 suítes e duas varandas."
+      ],
+      "assinaturas": [["Arquitetura", "Dávila Arquitetura"]],
+      "unidades": [
+        {"titulo": "Unidades lineares", "itens": ["4 suítes", "213 a 287 m²", "4 vagas"]},
+        {"titulo": "Coberturas vazadas ou duplex", "itens": ["4 suítes", "409 a 481 m²", "4 vagas"]}
+      ],
+      "nota": "Todas as unidades são 100% vazadas, com máxima ventilação, privacidade e conforto.",
+      "endereco": "SQNW 306, Blocos K e J · Noroeste",
+      "mapa": "https://maps.app.goo.gl/LCM11W1GH47gDqUC8",
+      "galeria": 10,
+      "antigos": ["azzure", "azzure-beiramar-private"]
+    },
+    {
+      "slug": "singular",
+      "ativo": true,
+      "nome": "Singular",
+      "regiao": "noroeste",
+      "incorporadora": "Soltec Engenharia",
+      "status": "Pronto para morar",
+      "chamada": "Morar no Noroeste <em>sem esperar</em> obra.",
+      "metragem": "152 a 336 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Singular Noroeste, da Soltec Engenharia, fica em uma das quadras mais valorizadas do Setor Noroeste, ao lado do Parque Burle Marx. Com arquitetura contemporânea e plantas amplas, foi concebido para oferecer conforto, privacidade e qualidade de vida, valorizando iluminação natural, ventilação cruzada e integração entre os ambientes.",
+        "O lazer é completo: piscina, spa, academia, salão de festas, espaço gourmet e áreas de convivência, em uma proposta residencial sofisticada e pronta para morar."
+      ],
+      "assinaturas": [],
+      "unidades": [
+        {"titulo": "Unidades lineares", "itens": ["4 suítes", "152 a 173 m²", "3 vagas"]},
+        {"titulo": "Coberturas vazadas", "itens": ["4 suítes", "291 a 336 m²", "4 vagas"]}
+      ],
+      "nota": "Ao lado do Parque Burle Marx, com lazer completo e pronto para morar.",
+      "endereco": "SQNW 111, Bloco G · Noroeste",
+      "mapa": "https://maps.app.goo.gl/ZRijtsDHcbCjUYXY8",
+      "galeria": 10,
+      "antigos": ["singular", "singular-beiramar-private"]
+    },
+    {
+      "slug": "season",
+      "ativo": true,
+      "nome": "Season",
+      "regiao": "noroeste",
+      "incorporadora": "Villela & Carvalho",
+      "status": "Pronto para morar",
+      "chamada": "Uma das <em>últimas</em> unidades prontas em um bairro quase esgotado.",
+      "metragem": "145 a 333 m²",
+      "dormitorios": "3 ou 4 suítes",
+      "descricao": [
+        "O Season Noroeste é um empreendimento de altíssimo padrão no coração da SQNW 304, uma das quadras mais valorizadas do Setor Noroeste. Com arquitetura assinada pela Dávila Arquitetura, une elegância, conforto e funcionalidade, com fachada imponente em granito, vidro laminado e perfis de alumínio com acabamento em inox.",
+        "As áreas de lazer, decoradas por Márcia Bizzi, incluem piscina climatizada na cobertura, churrasqueira e espaço gourmet, além de brinquedoteca, sala de jogos, academia e salão gourmet no pilotis."
+      ],
+      "assinaturas": [["Arquitetura", "Dávila Arquitetura"], ["Decoração das áreas comuns", "Márcia Bizzi"]],
+      "unidades": [
+        {"titulo": "Apartamentos", "itens": ["3 e 4 suítes", "145,28 a 162,69 m²"]},
+        {"titulo": "Coberturas duplex", "itens": ["290,71 a 333,63 m²"]}
+      ],
+      "nota": "Plantas pensadas para conforto térmico, ventilação natural e integração dos espaços.",
+      "endereco": "SQNW 304, Bloco H · Noroeste",
+      "mapa": "https://maps.app.goo.gl/RG9sByCvMuHjcxnVA",
+      "galeria": 10,
+      "antigos": ["season", "season-beiramar-private"]
+    },
+    {
+      "slug": "amaze-sunside",
+      "ativo": true,
+      "nome": "Amaze Sunside",
+      "regiao": "noroeste",
+      "incorporadora": "Villela & Carvalho",
+      "status": "",
+      "chamada": "Compacto na metragem, <em>amplo</em> em soluções.",
+      "metragem": "31 a 132 m²",
+      "dormitorios": "Studios, 1 e 2 quartos",
+      "descricao": [
+        "O Amaze Sunside, da Villela & Carvalho, é um empreendimento contemporâneo no Setor Noroeste, concebido para um estilo de vida dinâmico e urbano. Linhas modernas e soluções inteligentes de design reúnem studios e apartamentos compactos para quem busca praticidade, tecnologia e valorização.",
+        "Para morar ou investir, o Amaze combina plantas funcionais com infraestrutura completa de lazer e conveniência: academia equipada, salão gourmet, áreas de convivência e sistemas modernos de segurança e automação."
+      ],
+      "assinaturas": [["Arquitetura", "Estrela Arquitetura"]],
+      "unidades": [
+        {"titulo": "Unidades residenciais", "itens": ["Studios, 1 e 2 quartos", "31 a 63 m²"]},
+        {"titulo": "Lojas comerciais", "itens": ["59 a 132 m²"]}
+      ],
+      "nota": "Moradia contemporânea no Noroeste, com potencial de valorização patrimonial.",
+      "endereco": "CRNW 503, Bloco A, Lote 1 · Noroeste",
+      "mapa": "https://maps.app.goo.gl/7FfWuuaFkQjpCvEC9",
+      "galeria": 10,
+      "antigos": ["amaze", "amaze-beiramar-private"]
+    },
+    {
+      "slug": "parque-alvorada",
+      "ativo": true,
+      "nome": "Parque Alvorada",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pronto para morar",
+      "chamada": "Privacidade, verde e <em>penthouses</em> com piscina privativa.",
+      "metragem": "230 a 621 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Parque Alvorada é um empreendimento pronto para morar da Base Incorporações na Quadra 500, concebido para oferecer conforto, privacidade e integração com o verde em uma das regiões mais nobres do Sudoeste."
+      ],
+      "assinaturas": [["Arquitetura", "Júlio Crosara"], ["Decoração", "Deborah Pinheiro e Carolina Nathair"], ["Paisagismo", "Ana Paula Roseo"]],
+      "unidades": [
+        {"titulo": "Unidades de meio", "itens": ["230 m²", "4 suítes", "Suíte master com 2 cubas e banheira", "4 vagas"]},
+        {"titulo": "Unidades de canto", "itens": ["244 m²", "4 suítes", "Suíte master com 2 cubas e banheira", "4 vagas"]},
+        {"titulo": "Coberturas penthouse", "itens": ["598 a 621 m²", "Elevador privativo com 4 paradas", "Piscina, spa e espaço gourmet", "6 vagas"]}
+      ],
+      "nota": "Unidades vazadas, com alto nível de privacidade e conforto térmico.",
+      "endereco": "SQSW 500, Bloco G · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/BmWLByvMF9HSpNGD7",
+      "galeria": 10,
+      "antigos": ["parque-alvorada", "parque-alvorada-beiramar-private"]
+    },
+    {
+      "slug": "parque-cidade",
+      "ativo": true,
+      "nome": "Parque Cidade",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Obras avançadas",
+      "chamada": "Rooftops duplex com <em>elevador</em> privativo.",
+      "metragem": "122 a 395 m²",
+      "dormitorios": "3 e 4 suítes",
+      "descricao": [
+        "O Parque Cidade é um empreendimento da Base Incorporações na Quadra 500 do Sudoeste, concebido para unir sofisticação, mobilidade e conforto familiar em uma das regiões mais valorizadas de Brasília.",
+        "Com arquitetura inteligente e plantas amplas, o projeto privilegia ventilação cruzada, iluminação natural e integração entre ambientes."
+      ],
+      "assinaturas": [["Arquitetura", "Dávila Arquitetura"], ["Decoração", "Liê Arquitetas"]],
+      "unidades": [
+        {"titulo": "Apartamentos", "itens": ["3 suítes", "122 a 126 m²", "Varanda, lavabo e box-locker", "2 vagas"]},
+        {"titulo": "Rooftops duplex", "itens": ["4 suítes", "369 a 395 m²", "Elevador privativo", "4 vagas"]}
+      ],
+      "nota": "Unidades vazadas, com alto nível de privacidade e conforto térmico.",
+      "endereco": "SQSW 500, Bloco E · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/Wa24Epw8E81iCtMY7",
+      "galeria": 10,
+      "antigos": ["parque-cidade", "parque-cidade-beiramar-private"]
+    },
+    {
+      "slug": "parque-esplanada",
+      "ativo": true,
+      "nome": "Parque Esplanada",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pronto para morar",
+      "chamada": "Amplitude e <em>elegância</em> de frente para o verde.",
+      "metragem": "167 a 367 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Parque Esplanada é um empreendimento pronto para morar da Base Incorporações na Quadra 500, traduzindo amplitude, elegância e localização privilegiada no Sudoeste.",
+        "A arquitetura contemporânea e o padrão construtivo elevado garantem conforto real e exclusividade em cada detalhe."
+      ],
+      "assinaturas": [["Arquitetura", "Júlio Crosara"], ["Decoração", "Carolina Nathair e Carolina Gomide"]],
+      "unidades": [
+        {"titulo": "Unidades de meio", "itens": ["4 suítes", "167,60 m²", "Lavabo", "3 vagas"]},
+        {"titulo": "Unidades de canto", "itens": ["4 suítes", "186,20 m²", "Lavabo", "3 vagas"]},
+        {"titulo": "Rooftops", "itens": ["4 suítes", "329 a 367 m²", "Elevador privativo interno", "4 vagas"]}
+      ],
+      "nota": "Unidades vazadas, com iluminação natural abundante e alto nível de privacidade.",
+      "endereco": "SQSW 500, Bloco H · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/TGzeWe3Ppyghy33V8",
+      "galeria": 10,
+      "antigos": ["parque-esplanada", "parque-esplanada-beiramar-private"]
+    },
+    {
+      "slug": "parque-itamaraty",
+      "ativo": true,
+      "nome": "Parque Itamaraty",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pronto para morar",
+      "chamada": "Conforto <em>familiar</em> em endereço privilegiado.",
+      "metragem": "172 a 548 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Parque Itamaraty é um empreendimento pronto para morar da Base Incorporações na Quadra 500, pensado para oferecer conforto familiar, sofisticação e qualidade de vida em localização privilegiada no Sudoeste."
+      ],
+      "assinaturas": [["Arquitetura", "Eduardo Estrela"], ["Decoração", "Deborah Pinheiro e Carolina Nathair"], ["Paisagismo", "Ana Paula Roseo"]],
+      "unidades": [
+        {"titulo": "Apartamentos", "itens": ["4 suítes", "172 m²", "Suíte master com espaço para closet", "3 vagas"]},
+        {"titulo": "Coberturas penthouse", "itens": ["548 m²", "Elevador privativo", "Piscina, spa e espaço gourmet", "6 vagas"]}
+      ],
+      "nota": "Plantas amplas, com integração de ambientes e padrão construtivo elevado.",
+      "endereco": "SQSW 500, Bloco I · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/8Q5kBF5vMmBBkYVs6",
+      "galeria": 10,
+      "antigos": ["parque-itamaraty", "parque-itamaraty-beiramar-private"]
+    },
+    {
+      "slug": "parque-monumental",
+      "ativo": true,
+      "nome": "Parque Monumental",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pronto para morar",
+      "chamada": "Para quem busca <em>exclusividade</em> e legado.",
+      "metragem": "199 a 665 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Parque Monumental, da Base Incorporações, é um dos projetos mais imponentes da Quadra 500, pronto para morar, com arquitetura marcante e plantas amplas que valorizam a integração entre ambientes e a iluminação natural."
+      ],
+      "assinaturas": [],
+      "unidades": [
+        {"titulo": "Apartamentos", "itens": ["4 suítes", "199 a 241 m²", "Lavabo", "3 ou 4 vagas"]},
+        {"titulo": "Coberturas penthouse", "itens": ["553 a 665 m²", "Sala de veículos e hall privativo", "Elevador privativo", "6 vagas"]}
+      ],
+      "nota": "Um empreendimento pensado para quem busca exclusividade e legado no Sudoeste.",
+      "endereco": "SQSW 500, Bloco A · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/nXLGhqMxQyUaSAuf6",
+      "galeria": 10,
+      "antigos": ["parque-monumental", "parque-monumental-beiramar-private"]
+    },
+    {
+      "slug": "parque-nacional",
+      "ativo": true,
+      "nome": "Parque Nacional",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Obras em andamento",
+      "chamada": "Rooftops com <em>piscina</em> e espaço gourmet privativos.",
+      "metragem": "146 a 392 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Parque Nacional, da Base Incorporações, apresenta arquitetura contemporânea e plantas funcionais pensadas para conforto familiar e valorização patrimonial na Quadra 500.",
+        "Ambientes amplos e bem iluminados criam uma experiência residencial sofisticada e integrada."
+      ],
+      "assinaturas": [["Arquitetura", "Júlio Crosara"], ["Decoração", "Liê Arquitetas"]],
+      "unidades": [
+        {"titulo": "Unidades de meio", "itens": ["4 suítes", "146 m²", "3 vagas"]},
+        {"titulo": "Unidades de canto", "itens": ["4 suítes", "151 m²", "3 vagas"]},
+        {"titulo": "Rooftops", "itens": ["4 suítes", "360 a 392 m²", "Elevador privativo interno", "Piscina e espaço gourmet", "4 vagas"]}
+      ],
+      "nota": "Plantas inteligentes, com integração de ambientes e alto padrão construtivo.",
+      "endereco": "SQSW 500, Bloco F · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/ekH9ytLg9exzBNhD7",
+      "galeria": 3,
+      "antigos": ["parque-nacional", "parque-nacional-beiramar-private"]
+    },
+    {
+      "slug": "parque-planalto",
+      "ativo": true,
+      "nome": "Parque Planalto",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pronto para morar",
+      "chamada": "Suítes amplas e <em>varandas</em> generosas.",
+      "metragem": "132 a 370 m²",
+      "dormitorios": "3 e 4 suítes",
+      "descricao": [
+        "O Parque Planalto é um empreendimento da Base Incorporações pronto para morar na Quadra 500, pensado para oferecer amplitude, conforto e funcionalidade.",
+        "As plantas valorizam a integração de ambientes, suítes amplas e varandas generosas."
+      ],
+      "assinaturas": [["Arquitetura e decoração", "Alberto Dávila e Ana de Paula Pinto"]],
+      "unidades": [
+        {"titulo": "Apartamentos de canto", "itens": ["3 suítes", "132,61 m²", "2 vagas"]},
+        {"titulo": "Apartamentos de meio", "itens": ["4 suítes", "143,70 a 145,65 m²", "3 vagas"]},
+        {"titulo": "Rooftops duplex de meio", "itens": ["4 suítes", "292 a 353 m²", "4 vagas"]},
+        {"titulo": "Rooftops duplex de canto", "itens": ["4 suítes", "370 m²", "Elevador exclusivo", "4 vagas"]}
+      ],
+      "nota": "Distribuição inteligente e padrão construtivo elevado.",
+      "endereco": "SQSW 500, Bloco T · Sudoeste",
+      "mapa": "https://maps.app.goo.gl/fHhJJG4E1rcXe6tU7",
+      "galeria": 10,
+      "antigos": ["parque-planalto", "parque-planalto-beiramar-private"]
+    }
+  ]
+}
