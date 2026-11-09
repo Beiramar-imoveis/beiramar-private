@@ -8,7 +8,8 @@ Site estático (HTML, CSS e JS), sem WordPress, pronto para o GitHub Pages.
 | Pasta / arquivo | O que é |
 |---|---|
 | `dados/empreendimentos.json` | **Fonte de tudo**: regiões, números do Noroeste e os 12 empreendimentos (textos, metragens, status, fichas, endereço, mapa) |
-| `dados/blog/` e `dados/privacidade.html` | Texto dos artigos do blog e da política de privacidade |
+| `dados/traducoes-en.json` | **Versão em inglês** dos textos dos empreendimentos, regiões e números (mesmos slugs) |
+| `dados/blog/`, `dados/privacidade.html` e `dados/privacidade-en.html` | Artigos do blog (só em português) e política de privacidade nos dois idiomas |
 | `ferramentas/gerar_site.py` | Gera todas as páginas a partir dos dados |
 | `css/private.css` | Identidade visual e componentes (inclui os grafismos) |
 | `js/private.js` | Menu, filtros, carrossel, galeria e formulário |
@@ -17,6 +18,13 @@ Site estático (HTML, CSS e JS), sem WordPress, pronto para o GitHub Pages.
 | `imagens/site/` | Imagens institucionais e a logo original (`logo-beiramar-private.png`, sem alterações) |
 
 As páginas `index.html` de cada pasta são **geradas**: edite os dados e rode o gerador, não o HTML.
+
+## Idiomas
+
+O site é gerado em português (raiz) e em inglês (`/en/`), com os mesmos modelos de página. O seletor PT/EN no
+cabeçalho leva para a mesma página no outro idioma, e as páginas trazem as marcações `hreflang` para o Google.
+Ao incluir ou editar um empreendimento, atualize também o trecho correspondente em `dados/traducoes-en.json`;
+o que faltar lá aparece em português na versão em inglês. O blog e a landing page do Amaze Sunside existem só em português.
 
 ## Como atualizar
 

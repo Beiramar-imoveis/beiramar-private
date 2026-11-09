@@ -1,52 +1,116 @@
 #!/usr/bin/env python3
-"""Gera as páginas do site da Beiramar Private a partir de dados/empreendimentos.json.
+"""Gera as páginas do site da Beiramar Private, em português e em inglês.
 
 Uso (na pasta do projeto):
     python3 ferramentas/gerar_site.py
 
-O script recria todas as páginas HTML (início, regiões, empreendimentos, blog,
-privacidade, obrigado), os redirecionamentos dos endereços antigos do WordPress,
-o sitemap.xml e o robots.txt. Não precisa instalar nada além do Python 3.
+Fontes de conteúdo:
+    dados/empreendimentos.json   textos em português (fonte principal)
+    dados/traducoes-en.json      textos em inglês dos empreendimentos e regiões
+    dados/blog/, dados/privacidade*.html
+
+O script recria todas as páginas HTML nas duas línguas (a versão em inglês fica em /en/),
+os redirecionamentos dos endereços antigos do WordPress, o sitemap.xml e o robots.txt.
+Não precisa instalar nada além do Python 3.
 
 Todos os links internos são relativos, então o site funciona tanto no domínio
 próprio quanto na prévia do GitHub Pages (usuario.github.io/beiramar-private/).
 """
+import copy
 import json
-import os
 import shutil
 from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
 RAIZ = Path(__file__).resolve().parent.parent
 DADOS = json.loads((RAIZ / "dados" / "empreendimentos.json").read_text(encoding="utf-8"))
+TRAD = json.loads((RAIZ / "dados" / "traducoes-en.json").read_text(encoding="utf-8"))
 
 DOMINIO = "https://beiramarprivate.com.br"
 WHATS_NUM = "556131426671"
 WHATS_TXT = "(61) 3142-6671"
-WHATS_MSG = "Olá! Quero falar com um especialista Beiramar Private."
+WHATS_TXT_INTL = "+55 61 3142-6671"
 INSTAGRAM = "https://www.instagram.com/beiramarprivate/"
 LINKEDIN = "https://www.linkedin.com/company/beiramarimoveis/"
 FACEBOOK = "https://www.facebook.com/BeiramarImoveis"
 GRUPO = "https://grupobeiramar.com.br/"
+BEIRAMAR_IMOVEIS = "https://www.beiramarimoveis.com.br/"
 # Formulário: Web3Forms (mesmo serviço do site do Grupo). A chave define o e-mail que recebe os contatos.
 WEB3FORMS_KEY = "3d4ebba9-bbea-4efb-b910-c1501ea4f2af"
 ANO = "2026"
 
-REGIOES = {r["slug"]: r for r in DADOS["regioes"]}
-EMPS = [e for e in DADOS["empreendimentos"] if e.get("ativo", True)]
-EMP = {e["slug"]: e for e in EMPS}
+EMPS_PT = [x for x in DADOS["empreendimentos"] if x.get("ativo", True)]
+REG_PT = {r["slug"]: r for r in DADOS["regioes"]}
+
+LANG = "pt"          # idioma da página em geração
+geradas = []         # caminhos para o sitemap
 
 
-geradas = []  # caminhos para o sitemap
+# ---------------------------------------------------------------- idioma
+def en():
+    return LANG == "en"
+
+
+def t(pt, ingles):
+    return ingles if en() else pt
+
+
+def regioes():
+    """Regiões no idioma atual."""
+    if not en():
+        return REG_PT
+    out = {}
+    for slug, r in REG_PT.items():
+        x = copy.deepcopy(r)
+        x.update(TRAD["regioes"].get(slug, {}))
+        out[slug] = x
+    return out
+
+
+def emps():
+    """Empreendimentos no idioma atual."""
+    if not en():
+        return EMPS_PT
+    out = []
+    for x in EMPS_PT:
+        y = copy.deepcopy(x)
+        y.update(TRAD["empreendimentos"].get(x["slug"], {}))
+        y["status"] = TRAD["status"].get(x.get("status", ""), x.get("status", ""))
+        y["assinaturas"] = [[TRAD["rotulos_assinatura"].get(k, k), v] for k, v in x.get("assinaturas", [])]
+        out.append(y)
+    return out
+
+
+def numeros_dados():
+    n = copy.deepcopy(DADOS["numeros_noroeste"])
+    if en():
+        n.update(TRAD["numeros_noroeste"])
+    return n
+
+
+def prefixo(lang=None):
+    return "en/" if (lang or LANG) == "en" else ""
+
+
+# rotas que mudam de nome entre os idiomas
+ROTAS = {"obrigado": {"pt": "obrigado/", "en": "thank-you/"},
+         "privacidade": {"pt": "privacidade/", "en": "privacy/"}}
+
+
+def rota(chave, lang=None):
+    lang = lang or LANG
+    return ROTAS[chave][lang] if chave in ROTAS else chave
 
 
 # ---------------------------------------------------------------- utilidades
-def e(t):
-    return escape(str(t), quote=True)
+def e(txt):
+    return escape(str(txt), quote=True)
 
 
-def wa(msg=WHATS_MSG):
-    from urllib.parse import quote
+def wa(msg=None):
+    msg = msg or t("Olá! Quero falar com um especialista Beiramar Private.",
+                   "Hello! I would like to talk to a Beiramar Private specialist.")
     return f"https://wa.me/{WHATS_NUM}?text={quote(msg)}"
 
 
@@ -55,11 +119,11 @@ def seta():
             '<path d="M0 6h62M57 1l5 5-5 5"/></svg>')
 
 
-def assinatura(r, preta=False):
+def assinatura(r, preta=False, classe=""):
     """Logo original da Beiramar Private (arquivos oficiais, sem alterações).
     Versão branca sobre o Preto Private; versão preta sobre o Branco Private."""
     arq = "logo-beiramar-private-preta.png" if preta else "logo-beiramar-private.png"
-    return (f'<img class="assinatura" src="{r}imagens/site/{arq}" '
+    return (f'<img class="assinatura {classe}" src="{r}imagens/site/{arq}" '
             f'alt="Beiramar Private" width="716" height="428">')
 
 
@@ -70,7 +134,7 @@ ICONES = {
     "facebook": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.62 23.1 24 18.1 24 12.07"/></svg>',
 }
 MENU_ICONE = ('<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
-              'stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>')
+              'stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>')
 
 
 def img_emp(slug, nome="capa", p=False):
@@ -88,27 +152,38 @@ def foto_faixas(src_rel, src_p_rel, alt, classe="", sizes="(max-width: 820px) 10
             f'sizes="{sizes}" alt="{e(alt)}" {carrega} decoding="async"></div>')
 
 
+def sem_em(txt):
+    return txt.replace("<em>", "").replace("</em>", "")
+
+
 # ---------------------------------------------------------------- blocos comuns
-def head(r, titulo, descricao, caminho, imagem_og="compartilhamento.jpg", noindex=False, canonical=None, extra=""):
+def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jpg", noindex=False, canonical=None, extra=""):
+    """par = (caminho_pt, caminho_en) para os links de idioma (hreflang)."""
     url = f"{DOMINIO}/{caminho}"
     can = canonical or url
     og_img = imagem_og if imagem_og.startswith("http") else f"{DOMINIO}/{imagem_og}"
     robots = '<meta name="robots" content="noindex, follow">' if noindex else ""
+    alternos = ""
+    if par and par[0] is not None and par[1] is not None:
+        alternos = (f'<link rel="alternate" hreflang="pt-BR" href="{DOMINIO}/{par[0]}">\n'
+                    f'<link rel="alternate" hreflang="en" href="{DOMINIO}/{par[1]}">\n'
+                    f'<link rel="alternate" hreflang="x-default" href="{DOMINIO}/{par[0]}">')
     return f"""<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="{t('pt-BR', 'en')}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{e(titulo)}</title>
 <meta name="description" content="{e(descricao)}">
 <link rel="canonical" href="{e(can)}">
+{alternos}
 {robots}
 <meta name="theme-color" content="#131415">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="icon" type="image/png" sizes="64x64" href="{r}favicon.png">
 <link rel="apple-touch-icon" href="{r}apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="pt_BR">
+<meta property="og:locale" content="{t('pt_BR', 'en_US')}">
 <meta property="og:site_name" content="Beiramar Private">
 <meta property="og:title" content="{e(titulo)}">
 <meta property="og:description" content="{e(descricao)}">
@@ -127,22 +202,35 @@ def head(r, titulo, descricao, caminho, imagem_og="compartilhamento.jpg", noinde
 """
 
 
-def topo(r, atual="", lp=False):
+def idioma_link(r, par):
+    """Link para a mesma página no outro idioma."""
+    if en():
+        alvo = r + (par[0] if par and par[0] is not None else "")
+        return (f'<a href="{alvo}" class="nav-idioma" hreflang="pt-BR" lang="pt-BR" '
+                f'aria-label="Ver em português"><span class="nav-idioma__curto">PT</span><span class="nav-idioma__longo">Português</span></a>')
+    alvo = r + (par[1] if par and par[1] is not None else "en/")
+    return (f'<a href="{alvo}" class="nav-idioma" hreflang="en" lang="en" '
+            f'aria-label="View in English"><span class="nav-idioma__curto">EN</span><span class="nav-idioma__longo">English</span></a>')
+
+
+def topo(r, b, par, atual="", lp=False):
+    """Cabeçalho. r = caminho até a raiz (arquivos); b = raiz do idioma (links)."""
+    cta = f'<a href="#contato" class="nav-cta">{t("Falar com um especialista", "Talk to a specialist")}</a>'
     if lp:
-        nav = (f'<nav class="nav" id="nav" aria-label="Principal">'
-               f'<a href="#contato" class="nav-cta">Falar com um especialista</a></nav>')
+        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{cta}</nav>'
     else:
-        itens = [("noroeste", f"{r}noroeste/", "Noroeste"), ("quadra-500", f"{r}quadra-500/", "Quadra 500"),
-                 ("empreendimentos", f"{r}#empreendimentos", "Empreendimentos"), ("private", f"{r}#sobre", "A Private"),
-                 ("blog", f"{r}blog/", "Blog")]
-        links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if k == atual else ""}>{t}</a>' for k, h, t in itens)
-        nav = (f'<nav class="nav" id="nav" aria-label="Principal">{links}'
-               f'<a href="#contato" class="nav-cta">Falar com um especialista</a></nav>')
+        itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Quadra 500"),
+                 ("empreendimentos", f"{b}#empreendimentos", t("Empreendimentos", "Properties")),
+                 ("private", f"{b}#sobre", t("A Private", "About"))]
+        if not en():
+            itens.append(("blog", f"{b}blog/", "Blog"))
+        links = "".join(f'<a href="{h}"{" aria-current=\"page\"" if k == atual else ""}>{tx}</a>' for k, h, tx in itens)
+        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{links}{idioma_link(r, par)}{cta}</nav>'
     toggle = "" if lp else (f'<button class="nav-toggle" type="button" aria-controls="nav" aria-expanded="false" '
-                            f'aria-label="Abrir menu">{MENU_ICONE}</button>')
+                            f'aria-label="{t("Abrir menu", "Open menu")}">{MENU_ICONE}</button>')
     return f"""<header class="topo" id="topo">
   <div class="wrap">
-    <a href="{r}" class="marca" aria-label="Beiramar Private — início">{assinatura(r)}</a>
+    <a href="{b}" class="marca" aria-label="Beiramar Private — {t('início', 'home')}">{assinatura(r, classe='logo-branca')}{assinatura(r, preta=True, classe='logo-preta')}</a>
     {nav}
     {toggle}
   </div>
@@ -150,39 +238,42 @@ def topo(r, atual="", lp=False):
 """
 
 
-def rodape(r):
-    noroeste = "".join(f'<li><a href="{r}empreendimentos/{x["slug"]}/">{e(x["nome"])}</a></li>' for x in EMPS if x["regiao"] == "noroeste")
-    q500 = "".join(f'<li><a href="{r}empreendimentos/{x["slug"]}/">{e(x["nome"])}</a></li>' for x in EMPS if x["regiao"] == "quadra-500")
+def rodape(r, b):
+    lista = emps()
+    noroeste = "".join(f'<li><a href="{b}empreendimentos/{x["slug"]}/">{e(x["nome"])}</a></li>' for x in lista if x["regiao"] == "noroeste")
+    q500 = "".join(f'<li><a href="{b}empreendimentos/{x["slug"]}/">{e(x["nome"])}</a></li>' for x in lista if x["regiao"] == "quadra-500")
+    blog = "" if en() else f'<li><a href="{b}blog/">Blog</a></li>'
     return f"""<footer class="rodape">
   <div class="wrap">
     <div class="rodape__topo">
       <div>
-        <a href="{r}" aria-label="Beiramar Private — início">{assinatura(r)}</a>
-        <p class="rodape__frase">A frente de alto padrão da <em>Beiramar</em> no Plano Piloto.</p>
+        <a href="{b}" aria-label="Beiramar Private — {t('início', 'home')}">{assinatura(r)}</a>
+        <p class="rodape__frase">{t('A frente de alto padrão da <em>Beiramar</em> no Plano Piloto.', 'The luxury division of <em>Beiramar</em> in Brasília’s Plano Piloto.')}</p>
       </div>
       <div><h4>Noroeste</h4><ul>{noroeste}</ul></div>
       <div><h4>Quadra 500</h4><ul>{q500}</ul></div>
       <div>
-        <h4>Contato</h4>
+        <h4>{t('Contato', 'Contact')}</h4>
         <ul>
-          <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp {WHATS_TXT}</a></li>
-          <li><a href="{r}blog/">Blog</a></li>
+          <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp {t(WHATS_TXT, WHATS_TXT_INTL)}</a></li>
+          {blog}
+          <li><a href="{BEIRAMAR_IMOVEIS}" target="_blank" rel="noopener">Beiramar Imóveis</a></li>
           <li><a href="{GRUPO}" target="_blank" rel="noopener">Grupo Beiramar</a></li>
         </ul>
         <div class="redes" style="margin-top:22px">
-          <a href="{INSTAGRAM}" target="_blank" rel="noopener" aria-label="Instagram da Beiramar Private">{ICONES['insta']}</a>
-          <a href="{LINKEDIN}" target="_blank" rel="noopener" aria-label="LinkedIn da Beiramar">{ICONES['linkedin']}</a>
-          <a href="{FACEBOOK}" target="_blank" rel="noopener" aria-label="Facebook da Beiramar">{ICONES['facebook']}</a>
+          <a href="{INSTAGRAM}" target="_blank" rel="noopener" aria-label="Instagram Beiramar Private">{ICONES['insta']}</a>
+          <a href="{LINKEDIN}" target="_blank" rel="noopener" aria-label="LinkedIn Beiramar">{ICONES['linkedin']}</a>
+          <a href="{FACEBOOK}" target="_blank" rel="noopener" aria-label="Facebook Beiramar">{ICONES['facebook']}</a>
         </div>
       </div>
     </div>
     <div class="rodape__base">
-      <span>© {ANO} Beiramar Private · uma frente da Beiramar Imóveis, empresa do Grupo Beiramar.</span>
-      <nav aria-label="Links legais"><a href="{r}privacidade/">Privacidade e cookies</a><button type="button" class="gb-cookie-prefs-link" data-cookie-preferences>Preferências de cookies</button></nav>
+      <span>© {ANO} Beiramar Private · {t('uma frente da Beiramar Imóveis, empresa do Grupo Beiramar.', 'a division of Beiramar Imóveis, a Grupo Beiramar company.')}</span>
+      <nav aria-label="{t('Links legais', 'Legal')}"><a href="{b}{rota('privacidade')}">{t('Privacidade e cookies', 'Privacy and cookies')}</a><button type="button" class="gb-cookie-prefs-link" data-cookie-preferences>{t('Preferências de cookies', 'Cookie preferences')}</button></nav>
     </div>
   </div>
 </footer>
-<a class="whats" href="{wa()}" target="_blank" rel="noopener" aria-label="Falar pelo WhatsApp">{ICONES['whats']}</a>
+<a class="whats" href="{wa()}" target="_blank" rel="noopener" aria-label="{t('Falar pelo WhatsApp', 'Chat on WhatsApp')}">{ICONES['whats']}</a>
 <script src="{r}js/private.js" defer></script>
 <script src="{r}js/consentimento.js" defer></script>
 </body>
@@ -190,62 +281,77 @@ def rodape(r):
 """
 
 
-def card(r, x):
-    reg = REGIOES[x["regiao"]]
+def card(r, b, x, revelar=True):
+    reg = regioes()[x["regiao"]]
     selo = f'<span class="selo">{e(x["status"])}</span>' if x.get("status") else ""
-    return f"""<article class="card revelar" data-regiao="{x['regiao']}">
-  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async"></div>
+    rev = " revelar" if revelar else ""
+    return f"""<article class="card{rev}" data-regiao="{x['regiao']}">
+  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
   <div class="card__corpo">
     <span class="card__regiao">{e(reg['nome'])}</span>
-    <h3 class="card__nome"><a class="card__link" href="{r}empreendimentos/{x['slug']}/">{e(x['nome'])}</a></h3>
+    <h3 class="card__nome"><a class="card__link" href="{b}empreendimentos/{x['slug']}/">{e(x['nome'])}</a></h3>
     <p class="card__chamada">{x['chamada']}</p>
-    <div class="card__dados"><div><span>Metragem</span>{e(x['metragem'])}</div><div><span>Dormitórios</span>{e(x['dormitorios'])}</div></div>
-    <div class="card__mais">Conhecer {seta()}</div>
+    <div class="card__dados"><div><span>{t('Metragem', 'Size')}</span>{e(x['metragem'])}</div><div><span>{t('Dormitórios', 'Bedrooms')}</span>{e(x['dormitorios'])}</div></div>
+    <div class="card__mais">{t('Conhecer', 'Discover')} {seta()}</div>
   </div>
 </article>"""
 
 
 def opcoes_interesse(selecionado=""):
-    out = ['<option value="" disabled' + ("" if selecionado else " selected") + '>Selecione</option>']
-    for slug, reg in REGIOES.items():
+    out = ['<option value="" disabled' + ("" if selecionado else " selected") + f'>{t("Selecione", "Select")}</option>']
+    for slug, reg in regioes().items():
         out.append(f'<optgroup label="{e(reg["nome"])}">')
-        for x in EMPS:
+        for x in EMPS_PT:
             if x["regiao"] == slug:
                 sel = " selected" if x["nome"] == selecionado else ""
                 out.append(f'<option{sel}>{e(x["nome"])}</option>')
         out.append("</optgroup>")
-    out.append('<option>Quero uma indicação da curadoria</option>')
+    out.append(f'<option>{t("Quero uma indicação da curadoria", "I would like a curated recommendation")}</option>')
     return "".join(out)
 
 
-def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', texto=None, interesse="", origem="Site", claro=False):
-    texto = texto or ("Conte o que você procura. Um especialista Private retorna com opções selecionadas "
-                      "para o seu perfil, com discrição e sem compromisso.")
+def contato(r, b, titulo=None, texto=None, interesse="", origem="Site", claro=False):
+    titulo = titulo or t('Vamos encontrar o seu <em>próximo endereço</em>.', 'Let’s find your <em>next address</em>.')
+    texto = texto or t("Conte o que você procura. Um especialista Private retorna com opções selecionadas "
+                       "para o seu perfil, com discrição e sem compromisso.",
+                       "Tell us what you are looking for. A Private specialist will get back to you with options "
+                       "selected for your profile, discreetly and with no obligation.")
     tema = " tema-claro" if claro else ""
+    if en():
+        quartos = ('<option value="">Any</option><option>Studio or 1 bedroom</option><option>2 bedrooms</option>'
+                   '<option>3 bedrooms or suites</option><option>4 suites</option><option>Penthouse</option>')
+        tel = ('<input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" '
+               'placeholder="+1 555 123 4567" minlength="8" required>')
+    else:
+        quartos = ('<option value="">Indiferente</option><option>Studio ou 1 quarto</option><option>2 quartos</option>'
+                   '<option>3 quartos ou suítes</option><option>4 suítes</option><option>Cobertura</option>')
+        tel = ('<input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" '
+               'placeholder="(61) 99999-9999" minlength="14" data-mascara="br" required>')
     return f"""<section class="secao{tema}" id="contato">
   <div class="wrap contato">
     <div class="revelar">
-      <span class="rotulo rotulo--linha">Atendimento Private</span>
+      <span class="rotulo rotulo--linha">{t('Atendimento Private', 'Private service')}</span>
       <h2 class="titulo">{titulo}</h2>
       <p class="lead">{texto}</p>
       <div class="contato__canais">
-        <a href="{wa()}" target="_blank" rel="noopener"><span><small>WhatsApp</small>{WHATS_TXT}</span>{seta()}</a>
+        <a href="{wa()}" target="_blank" rel="noopener"><span><small>WhatsApp</small>{t(WHATS_TXT, WHATS_TXT_INTL)}</span>{seta()}</a>
         <a href="{INSTAGRAM}" target="_blank" rel="noopener"><span><small>Instagram</small>@beiramarprivate</span>{seta()}</a>
       </div>
     </div>
-    <form class="form revelar" action="https://api.web3forms.com/submit" method="POST" data-lead data-obrigado="{r}obrigado/">
+    <form class="form revelar" action="https://api.web3forms.com/submit" method="POST" data-lead data-obrigado="{b}{rota('obrigado')}">
       <input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
       <input type="hidden" name="from_name" value="Site Beiramar Private">
+      <input type="hidden" name="idioma" value="{t('Português', 'Inglês')}">
       <input type="hidden" name="origem" value="{e(origem)}">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <div class="campo campo--inteiro"><label for="f-nome">Nome</label><input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="Como podemos te chamar?" required></div>
-      <div class="campo"><label for="f-whats">WhatsApp</label><input id="f-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(61) 99999-9999" minlength="14" required></div>
-      <div class="campo"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" required></div>
-      <div class="campo"><label for="f-interesse">Interesse</label><select id="f-interesse" name="interesse" required>{opcoes_interesse(interesse)}</select></div>
-      <div class="campo"><label for="f-quartos">Dormitórios</label><select id="f-quartos" name="quartos"><option value="">Indiferente</option><option>Studio ou 1 quarto</option><option>2 quartos</option><option>3 quartos ou suítes</option><option>4 suítes</option><option>Cobertura</option></select></div>
-      <div class="campo campo--inteiro"><label for="f-msg">Mensagem <span style="opacity:.6">(opcional)</span></label><textarea id="f-msg" name="mensagem" rows="3" placeholder="Conte rapidamente o que você procura."></textarea></div>
-      <p class="form__aviso">Ao enviar, você concorda com o uso dos seus dados para que a equipe Beiramar Private entre em contato, conforme a <a href="{r}privacidade/">Política de Privacidade</a>.</p>
-      <div class="form__rodape"><button type="submit" class="btn btn-claro">Enviar {seta()}</button></div>
+      <div class="campo campo--inteiro"><label for="f-nome">{t('Nome', 'Name')}</label><input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="{t('Como podemos te chamar?', 'Your name')}" required></div>
+      <div class="campo"><label for="f-whats">{t('WhatsApp', 'WhatsApp / phone')}</label>{tel}</div>
+      <div class="campo"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="{t('seu@email.com', 'you@email.com')}" required></div>
+      <div class="campo"><label for="f-interesse">{t('Interesse', 'Interest')}</label><select id="f-interesse" name="interesse" required>{opcoes_interesse(interesse)}</select></div>
+      <div class="campo"><label for="f-quartos">{t('Dormitórios', 'Bedrooms')}</label><select id="f-quartos" name="quartos">{quartos}</select></div>
+      <div class="campo campo--inteiro"><label for="f-msg">{t('Mensagem', 'Message')} <span style="opacity:.6">({t('opcional', 'optional')})</span></label><textarea id="f-msg" name="mensagem" rows="3" placeholder="{t('Conte rapidamente o que você procura.', 'Briefly tell us what you are looking for.')}"></textarea></div>
+      <p class="form__aviso">{t('Ao enviar, você concorda com o uso dos seus dados para que a equipe Beiramar Private entre em contato, conforme a', 'By submitting, you agree that the Beiramar Private team may use your data to contact you, as described in our')} <a href="{b}{rota('privacidade')}">{t('Política de Privacidade', 'Privacy Policy')}</a>.</p>
+      <div class="form__rodape"><button type="submit" class="btn btn-claro">{t('Enviar', 'Send')} {seta()}</button></div>
       <p class="form__status" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -253,33 +359,59 @@ def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', text
 """
 
 
-def institucional(r, claro=False):
+def institucional(r, b, claro=False):
     tema = " tema-claro" if claro else " secao--2"
     return f"""<section class="secao secao--compacta{tema}">
   <div class="wrap institucional revelar">
     {assinatura(r, preta=claro)}
     <div>
       <span class="rotulo rotulo--linha">Beiramar Private</span>
-      <p class="subtitulo" style="margin:20px 0 18px;max-width:760px">A frente de alto padrão da Beiramar, dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília.</p>
-      <p class="texto" style="max-width:720px">Nosso atendimento é consultivo, discreto e personalizado, conduzido por especialistas que entendem o tempo, o perfil e as expectativas de quem busca viver ou investir com segurança no alto padrão.</p>
+      <p class="subtitulo" style="margin:20px 0 18px;max-width:760px">{t('A frente de alto padrão da Beiramar Imóveis, dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília.', 'The luxury division of Beiramar Imóveis, dedicated to curating exclusive homes in Brasília’s most valued neighborhoods.')}</p>
+      <p class="texto" style="max-width:720px">{t('Nosso atendimento é consultivo, discreto e personalizado, conduzido por especialistas que entendem o tempo, o perfil e as expectativas de quem busca viver ou investir com segurança no alto padrão. Por trás dele, estão os 45 anos do Grupo Beiramar.', 'Our service is advisory, discreet and personal, led by specialists who understand the timing, profile and expectations of those who want to live or invest safely in the luxury market. Behind it stand the 45 years of Grupo Beiramar.')}</p>
+      <a href="{GRUPO}" class="btn btn-linha" target="_blank" rel="noopener" style="margin-top:30px">{t('Conheça o Grupo Beiramar', 'Discover Grupo Beiramar')} {seta()}</a>
     </div>
   </div>
 </section>
 """
 
 
-def numeros(r, com_link=True):
-    n = DADOS["numeros_noroeste"]
-    itens = "".join(f'<div class="numeros__item revelar"><p>{e(a)}</p><span class="bloco-preto">{e(b)}</span></div>' for a, b in n["itens"])
-    fonte = f'<p class="numeros__fonte">Fonte: {e(n["fonte"])}</p>' if n.get("fonte") else ""
-    link = (f'<a href="{r}noroeste/" class="btn btn-linha" style="margin-top:40px">Conhecer o Noroeste {seta()}</a>'
-            if com_link else "")
+def ecossistema(r, b, claro=True):
+    tema = " tema-claro" if claro else ""
+    frentes = [
+        ("Beiramar Imóveis", t("Imobiliária full service desde 1981: compra, venda, locação e gestão de imóveis em Brasília. A Beiramar Private é a sua frente de alto padrão.",
+                               "Full-service real estate firm since 1981: buying, selling, leasing and property management in Brasília. Beiramar Private is its luxury division.")),
+        ("BRM Asset", t("Gestão de ativos imobiliários, com atuação nos mercados regionais de maior crescimento do país.",
+                        "Real estate asset management, focused on Brazil’s fastest-growing regional markets.")),
+        ("BRM IB", t("Investment banking: estrutura operações de equity e crédito no mercado imobiliário.",
+                     "Investment banking: structures equity and credit transactions in real estate.")),
+        ("BRM Inc", t("Incorporação imobiliária.", "Real estate development.")),
+    ]
+    itens = "".join(f'<div class="frente{" frente--destaque" if i == 0 else ""}"><h3>{e(n)}</h3><p>{e(d)}</p></div>'
+                    for i, (n, d) in enumerate(frentes))
+    return f"""<section class="secao{tema}" id="ecossistema">
+  <div class="wrap ecossistema">
+    <div class="revelar">
+      <span class="rotulo rotulo--linha">{t('Ecossistema Beiramar', 'The Beiramar ecosystem')}</span>
+      <h2 class="titulo" style="margin:22px 0 28px">{t('Por trás da Private, <em>45 anos</em> de Beiramar.', 'Behind Private, <em>45 years</em> of Beiramar.')}</h2>
+      <p class="lead">{t('A Beiramar Private é a frente de alto padrão da Beiramar Imóveis, que integra o Grupo Beiramar: um ecossistema que une imobiliária, gestão de ativos, investment banking e incorporação. Para quem compra ou investe, isso significa solidez, informação e suporte em cada etapa.', 'Beiramar Private is the luxury division of Beiramar Imóveis, part of Grupo Beiramar: an ecosystem that brings together brokerage, asset management, investment banking and real estate development. For buyers and investors, this means solidity, market intelligence and support at every step.')}</p>
+      <a href="{GRUPO}" class="btn btn-claro" target="_blank" rel="noopener" style="margin-top:36px">{t('Conheça o Grupo Beiramar', 'Discover Grupo Beiramar')} {seta()}</a>
+    </div>
+    <div class="frentes revelar">{itens}</div>
+  </div>
+</section>
+"""
+
+
+def numeros(r, b):
+    n = numeros_dados()
+    itens = "".join(f'<div class="numeros__item revelar"><p>{e(a)}</p><span class="bloco-preto">{e(c)}</span></div>' for a, c in n["itens"])
+    fonte = f'<p class="numeros__fonte">{t("Fonte", "Source")}: {e(n["fonte"])}</p>' if n.get("fonte") else ""
+    destaque = t('O Noroeste<br>já vendeu <em>94%</em> do que lançou.', 'Noroeste<br>has already sold <em>94%</em> of everything launched.')
     return f"""<section class="secao claro" id="numeros">
   <div class="wrap numeros">
     <div class="revelar">
       <span class="rotulo rotulo--linha">{e(n['titulo'])}</span>
-      <p class="numeros__destaque" style="margin-top:28px">O Noroeste<br>já vendeu <em>94%</em> do que lançou.</p>
-      {link}
+      <p class="numeros__destaque" style="margin-top:28px">{destaque}</p>
     </div>
     <div class="numeros__lista">{itens}{fonte}</div>
   </div>
@@ -288,89 +420,99 @@ def numeros(r, com_link=True):
 
 
 def visor():
-    return f"""<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Galeria de fotos">
+    return f"""<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="{t('Galeria de fotos', 'Photo gallery')}">
   <img src="" alt="">
-  <button class="visor__btn visor__fechar" type="button" aria-label="Fechar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  <button class="visor__btn visor__ant" type="button" aria-label="Foto anterior">{seta()}</button>
-  <button class="visor__btn visor__prox" type="button" aria-label="Próxima foto">{seta()}</button>
+  <button class="visor__btn visor__fechar" type="button" aria-label="{t('Fechar', 'Close')}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="visor__btn visor__ant" type="button" aria-label="{t('Foto anterior', 'Previous photo')}">{seta()}</button>
+  <button class="visor__btn visor__prox" type="button" aria-label="{t('Próxima foto', 'Next photo')}">{seta()}</button>
   <span class="visor__contador"></span>
 </div>"""
 
 
+def raiz_rel(caminho):
+    """'../' repetido conforme a profundidade do caminho da página."""
+    return "../" * caminho.strip("/").count("/") + ("../" if caminho.strip("/") else "")
+
+
 def salvar(caminho, html, sitemap=True):
-    destino = RAIZ / caminho / "index.html" if caminho else RAIZ / "index.html"
-    if caminho.endswith(".html"):
-        destino = RAIZ / caminho
+    """caminho completo (com 'en/' quando for o caso), sem barra no início; '' = raiz."""
+    c = caminho.strip("/")
+    destino = RAIZ / c / "index.html" if c else RAIZ / "index.html"
     destino.parent.mkdir(parents=True, exist_ok=True)
     destino.write_text(html, encoding="utf-8")
     if sitemap:
-        geradas.append(caminho if caminho.endswith(".html") or not caminho else caminho + "/")
+        geradas.append(c + "/" if c else "")
 
 
 # ---------------------------------------------------------------- páginas
 def pagina_inicio():
-    r = ""
-    n_emp = len(EMPS)
-    cards = "".join(card(r, x) for x in EMPS)
-    regioes = ""
-    for slug, reg in REGIOES.items():
-        qtd = sum(1 for x in EMPS if x["regiao"] == slug)
-        regioes += f"""<a class="regiao revelar" href="{slug}/">
-  {foto_faixas(img_site(reg['imagem']), img_site(reg['imagem'], True), reg['nome'], sizes='(max-width: 820px) 100vw, 50vw')}
-  <span class="rotulo">Plano Piloto</span>
+    caminho = prefixo()
+    r = raiz_rel(caminho)
+    b = r + prefixo()
+    par = ("", "en/")
+    lista = emps()
+    cards = "".join(card(r, b, x) for x in lista)
+    regs = ""
+    for slug, reg in regioes().items():
+        qtd = sum(1 for x in lista if x["regiao"] == slug)
+        regs += f"""<a class="regiao revelar" href="{b}{slug}/">
+  {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), reg['nome'], sizes='(max-width: 820px) 100vw, 50vw')}
+  <span class="rotulo">Plano Piloto · Brasília</span>
   <h3>{e(reg['nome'])}</h3>
   <p>{e(reg['subtitulo'])}</p>
-  <span class="regiao__rodape"><span>{qtd} empreendimentos</span>{seta()}</span>
+  <span class="regiao__rodape"><span>{qtd} {t('empreendimentos', 'properties')}</span>{seta()}</span>
 </a>"""
     jsonld = json.dumps({
         "@context": "https://schema.org", "@type": "RealEstateAgent", "name": "Beiramar Private",
-        "url": DOMINIO + "/", "logo": DOMINIO + "/apple-touch-icon.png", "image": DOMINIO + "/compartilhamento.jpg",
-        "telephone": "+55 61 3142-6671", "areaServed": "Brasília, DF",
-        "parentOrganization": {"@type": "Organization", "name": "Grupo Beiramar", "url": GRUPO},
+        "url": DOMINIO + "/" + caminho, "logo": DOMINIO + "/apple-touch-icon.png", "image": DOMINIO + "/compartilhamento.jpg",
+        "telephone": "+55 61 3142-6671", "areaServed": "Brasília, DF, Brazil",
+        "parentOrganization": {"@type": "Organization", "name": "Beiramar Imóveis", "url": BEIRAMAR_IMOVEIS,
+                               "parentOrganization": {"@type": "Organization", "name": "Grupo Beiramar", "url": GRUPO}},
         "sameAs": [INSTAGRAM, LINKEDIN, FACEBOOK]}, ensure_ascii=False)
-    html = head(r, "Beiramar Private | Imóveis de alto padrão no Plano Piloto",
-                "Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
-                "", extra=f'<script type="application/ld+json">{jsonld}</script>')
-    html += topo(r)
+    html = head(r, t("Beiramar Private | Imóveis de alto padrão no Plano Piloto", "Beiramar Private | Luxury real estate in Brasília’s Plano Piloto"),
+                t("Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
+                  "Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in Brasília’s Plano Piloto. Advisory, discreet and personal service by Beiramar."),
+                caminho, par=par, extra=f'<script type="application/ld+json">{jsonld}</script>')
+    html += topo(r, b, par)
     html += f"""<main>
 <section class="hero">
-  {foto_faixas(img_site('home-hero'), img_site('home-hero', True), 'Piscina privativa de cobertura com vista para o verde', 'hero__midia', eager=True)}
+  {foto_faixas(r + img_site('home-hero'), r + img_site('home-hero', True), t('Piscina privativa de cobertura com vista para o verde', 'Private rooftop pool overlooking the green'), 'hero__midia', eager=True)}
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
-      <span class="rotulo rotulo--linha">Beiramar Private · Plano Piloto</span>
-      <h1 class="display">Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.</h1>
-      <p class="lead">Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, com atendimento consultivo, discreto e personalizado.</p>
+      <span class="rotulo rotulo--linha">Beiramar Private · {t('Plano Piloto', 'Brasília, Brazil')}</span>
+      <h1 class="display">{t('Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.', 'Living well is a decision. We take care of the <em>address</em>.')}</h1>
+      <p class="lead">{t('Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, com atendimento consultivo, discreto e personalizado.', 'Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in the heart of Brasília’s Plano Piloto, with advisory, discreet and personal service.')}</p>
       <div class="hero__acoes">
-        <a href="#empreendimentos" class="btn btn-claro">Ver empreendimentos {seta()}</a>
-        <a href="#contato" class="btn btn-linha">Falar com um especialista</a>
+        <a href="#empreendimentos" class="btn btn-claro">{t('Ver empreendimentos', 'View properties')} {seta()}</a>
+        <a href="#contato" class="btn btn-linha">{t('Falar com um especialista', 'Talk to a specialist')}</a>
       </div>
     </div>
     <div class="hero__rodape">
       <dl class="hero__dados">
-        <div><dt>Empreendimentos</dt><dd>{n_emp} selecionados</dd></div>
-        <div><dt>Regiões</dt><dd>Noroeste e Quadra 500</dd></div>
-        <div><dt>Atendimento</dt><dd>Consultivo e exclusivo</dd></div>
+        <div><dt>{t('Empreendimentos', 'Properties')}</dt><dd>{len(lista)} {t('selecionados', 'selected')}</dd></div>
+        <div><dt>{t('Regiões', 'Neighborhoods')}</dt><dd>{t('Noroeste e Quadra 500', 'Noroeste and Quadra 500')}</dd></div>
+        <div><dt>{t('Atendimento', 'Service')}</dt><dd>{t('Consultivo e exclusivo', 'Advisory and exclusive')}</dd></div>
       </dl>
-      <a href="#sobre" class="rolar"><span></span>Role</a>
+      <a href="#sobre" class="rolar"><span></span>{t('Role', 'Scroll')}</a>
     </div>
   </div>
 </section>
 
 <section class="secao tema-claro" id="sobre">
   <div class="wrap sobre">
-    <figure class="sobre__foto moldura revelar"><img src="{img_site('sobre')}" srcset="{img_site('sobre', True)} 760w, {img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="Fachada noturna de empreendimento de alto padrão no Noroeste" loading="lazy" decoding="async"></figure>
+    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada noturna de empreendimento de alto padrão no Noroeste', 'Night view of a luxury building in Noroeste')}" loading="lazy" decoding="async"></figure>
     <div class="revelar">
-      <span class="rotulo rotulo--linha">A Private</span>
-      <h2 class="titulo">A frente de alto padrão da <em>Beiramar</em>.</h2>
+      <span class="rotulo rotulo--linha">{t('A Private', 'About Private')}</span>
+      <h2 class="titulo">{t('A frente de alto padrão da <em>Beiramar</em>.', 'The luxury division of <em>Beiramar</em>.')}</h2>
       <div class="texto">
-        <p>A Beiramar Private é dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília. Atuamos com foco em localização, arquitetura, padrão construtivo e potencial de valorização.</p>
-        <p>Nosso atendimento é consultivo, discreto e personalizado, conduzido por especialistas que entendem o tempo, o perfil e as expectativas de quem busca viver ou investir com segurança no alto padrão.</p>
+        <p>{t('A Beiramar Private é dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília. Atuamos com foco em localização, arquitetura, padrão construtivo e potencial de valorização.', 'Beiramar Private curates exclusive homes in Brasília’s most valued neighborhoods, inside the Plano Piloto, the city’s modernist core and a UNESCO World Heritage Site. We focus on location, architecture, construction standards and appreciation potential.')}</p>
+        <p>{t('Nosso atendimento é consultivo, discreto e personalizado, conduzido por especialistas que entendem o tempo, o perfil e as expectativas de quem busca viver ou investir com segurança no alto padrão.', 'Our service is advisory, discreet and personal, led by specialists who understand the timing, profile and expectations of those who want to live or invest safely in the luxury market.')}</p>
       </div>
       <div class="pilares">
-        <div><strong>Localização</strong><p>Endereços escassos, nos bairros que mais se valorizam no Plano Piloto.</p></div>
-        <div><strong>Arquitetura</strong><p>Projetos assinados, com plantas amplas e identidade própria.</p></div>
-        <div><strong>Padrão construtivo</strong><p>Incorporadoras de referência e acabamentos de alto padrão.</p></div>
-        <div><strong>Valorização</strong><p>Imóveis escolhidos para morar bem e preservar patrimônio.</p></div>
+        <div><strong>{t('Localização', 'Location')}</strong><p>{t('Endereços escassos, nos bairros que mais se valorizam no Plano Piloto.', 'Scarce addresses in the Plano Piloto neighborhoods with the strongest appreciation.')}</p></div>
+        <div><strong>{t('Arquitetura', 'Architecture')}</strong><p>{t('Projetos assinados, com plantas amplas e identidade própria.', 'Signature projects with generous floor plans and a distinct identity.')}</p></div>
+        <div><strong>{t('Padrão construtivo', 'Construction')}</strong><p>{t('Incorporadoras de referência e acabamentos de alto padrão.', 'Leading developers and high-end finishes.')}</p></div>
+        <div><strong>{t('Valorização', 'Appreciation')}</strong><p>{t('Imóveis escolhidos para morar bem e preservar patrimônio.', 'Homes chosen to live well and preserve wealth.')}</p></div>
       </div>
     </div>
   </div>
@@ -379,18 +521,18 @@ def pagina_inicio():
 <section class="secao" id="regioes">
   <div class="wrap">
     <div class="cabeca revelar">
-      <div class="cabeca__texto"><span class="rotulo rotulo--linha">Onde atuamos</span><h2 class="titulo" style="margin-top:22px">Dois endereços. <em>Nenhum</em> comum.</h2></div>
+      <div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Onde atuamos', 'Where we work')}</span><h2 class="titulo" style="margin-top:22px">{t('Dois endereços. <em>Nenhum</em> comum.', 'Two addresses. <em>Nothing</em> ordinary.')}</h2></div>
     </div>
-    <div class="regioes">{regioes}</div>
+    <div class="regioes">{regs}</div>
   </div>
 </section>
 
 <section class="secao tema-claro" id="empreendimentos">
   <div class="wrap">
     <div class="cabeca revelar">
-      <div class="cabeca__texto"><span class="rotulo rotulo--linha">Curadoria Private</span><h2 class="titulo" style="margin-top:22px">Empreendimentos <em>selecionados</em>.</h2></div>
-      <div class="filtros" data-filtros="grade-emp" role="group" aria-label="Filtrar por região">
-        <button class="filtro" type="button" data-filtro="todos" aria-pressed="true">Todos</button>
+      <div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Curadoria Private', 'Private selection')}</span><h2 class="titulo" style="margin-top:22px">{t('Empreendimentos <em>selecionados</em>.', '<em>Selected</em> properties.')}</h2></div>
+      <div class="filtros" data-filtros="grade-emp" role="group" aria-label="{t('Filtrar por região', 'Filter by neighborhood')}">
+        <button class="filtro" type="button" data-filtro="todos" aria-pressed="true">{t('Todos', 'All')}</button>
         <button class="filtro" type="button" data-filtro="noroeste" aria-pressed="false">Noroeste</button>
         <button class="filtro" type="button" data-filtro="quadra-500" aria-pressed="false">Quadra 500</button>
       </div>
@@ -402,37 +544,50 @@ def pagina_inicio():
 <section class="secao secao--2" id="como-trabalhamos">
   <div class="wrap">
     <div class="cabeca revelar">
-      <div class="cabeca__texto"><span class="rotulo rotulo--linha">Como trabalhamos</span><h2 class="titulo" style="margin-top:22px">Menos opções. Mais <em>acerto</em>.</h2></div>
-      <p class="lead">Um atendimento pensado para quem valoriza o próprio tempo.</p>
+      <div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Como trabalhamos', 'How we work')}</span><h2 class="titulo" style="margin-top:22px">{t('Menos opções. Mais <em>acerto</em>.', 'Fewer options. Better <em>choices</em>.')}</h2></div>
+      <p class="lead">{t('Um atendimento pensado para quem valoriza o próprio tempo.', 'A service designed for those who value their time.')}</p>
     </div>
     <div class="processo revelar">
-      <div class="etapa"><span class="numero-serif">01</span><h3>Escuta</h3><p>Entendemos o seu momento, a sua rotina e o que o próximo endereço precisa entregar.</p></div>
-      <div class="etapa"><span class="numero-serif">02</span><h3>Curadoria</h3><p>Selecionamos poucas opções, alinhadas ao seu perfil, com as informações de cada projeto.</p></div>
-      <div class="etapa"><span class="numero-serif">03</span><h3>Visita privada</h3><p>Apresentamos os imóveis com hora marcada e atendimento exclusivo.</p></div>
-      <div class="etapa"><span class="numero-serif">04</span><h3>Negociação</h3><p>Conduzimos proposta, documentação e fechamento com discrição e segurança.</p></div>
+      <div class="etapa"><span class="numero-serif">01</span><h3>{t('Escuta', 'Listening')}</h3><p>{t('Entendemos o seu momento, a sua rotina e o que o próximo endereço precisa entregar.', 'We understand your moment, your routine and what your next address needs to deliver.')}</p></div>
+      <div class="etapa"><span class="numero-serif">02</span><h3>{t('Curadoria', 'Curation')}</h3><p>{t('Selecionamos poucas opções, alinhadas ao seu perfil, com as informações de cada projeto.', 'We select a few options aligned with your profile, with the details of each project.')}</p></div>
+      <div class="etapa"><span class="numero-serif">03</span><h3>{t('Visita privada', 'Private viewing')}</h3><p>{t('Apresentamos os imóveis com hora marcada e atendimento exclusivo.', 'We show the properties by appointment, with exclusive service.')}</p></div>
+      <div class="etapa"><span class="numero-serif">04</span><h3>{t('Negociação', 'Negotiation')}</h3><p>{t('Conduzimos proposta, documentação e fechamento com discrição e segurança.', 'We handle the offer, paperwork and closing with discretion and security.')}</p></div>
     </div>
   </div>
 </section>
 
-{contato(r, origem='Página inicial', claro=True)}
+{ecossistema(r, b, claro=True)}
+{contato(r, b, origem=t('Página inicial', 'Home (EN)'))}
 </main>
 """
-    html += rodape(r)
-    salvar("", html)
+    html += rodape(r, b)
+    salvar(caminho, html)
 
 
 def pagina_regiao(slug):
-    reg = REGIOES[slug]
-    r = "../"
-    emps = [x for x in EMPS if x["regiao"] == slug]
-    cards = "".join(card(r, x) for x in emps)
-    difs = "".join(f'<div class="diferencial"><span class="numero-serif">{i:02d}</span><h3>{e(t)}</h3><p>{e(d)}</p></div>'
-                   for i, (t, d) in enumerate(reg["diferenciais"], 1))
+    caminho = prefixo() + slug + "/"
+    r = raiz_rel(caminho)
+    b = r + prefixo()
+    par = (f"{slug}/", f"en/{slug}/")
+    reg = regioes()[slug]
+    lista = [x for x in emps() if x["regiao"] == slug]
+    cards = "".join(card(r, b, x) for x in lista)
+    difs = "".join(f'<div class="diferencial"><span class="numero-serif">{i:02d}</span><h3>{e(a)}</h3><p>{e(d)}</p></div>'
+                   for i, (a, d) in enumerate(reg["diferenciais"], 1))
     intro = "".join(f"<p>{e(p)}</p>" for p in reg["intro"])
+    nor = slug == "noroeste"
+    if en():
+        dif_rot = f"Why {reg['rotulo']}"
+        tit_emp = f"Properties in <em>{e(reg['rotulo'])}</em>."
+        tit_cont = f"Receive the <em>{e(reg['rotulo'])}</em> selection."
+    else:
+        dif_rot = f"O diferencial {'do' if nor else 'da'} {reg['rotulo']}"
+        tit_emp = f"Empreendimentos {'no' if nor else 'na'} <em>{e(reg['rotulo'])}</em>."
+        tit_cont = f"Receba a curadoria {'do' if nor else 'da'} <em>{e(reg['rotulo'])}</em>."
     html = head(r, f"{reg['nome']} | Beiramar Private",
-                f"{reg['titulo']} {reg['titulo_destaque'].replace('<em>','').replace('</em>','')} {reg['subtitulo']}", f"{slug}/",
+                f"{reg['titulo']} {sem_em(reg['titulo_destaque'])} {reg['subtitulo']}", caminho, par=par,
                 imagem_og=img_site(reg["imagem"]))
-    html += topo(r, slug)
+    html += topo(r, b, par, slug)
     html += f"""<main>
 <section class="hero">
   {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), reg['nome'], 'hero__midia', eager=True)}
@@ -442,58 +597,60 @@ def pagina_regiao(slug):
       <h1 class="display">{e(reg['titulo'])}<br>{reg['titulo_destaque']}</h1>
       <p class="lead">{e(reg['subtitulo'])}</p>
       <div class="hero__acoes">
-        <a href="#empreendimentos" class="btn btn-claro">Ver empreendimentos {seta()}</a>
-        <a href="#contato" class="btn btn-linha">Agendar visita</a>
+        <a href="#empreendimentos" class="btn btn-claro">{t('Ver empreendimentos', 'View properties')} {seta()}</a>
+        <a href="#contato" class="btn btn-linha">{t('Agendar visita', 'Book a viewing')}</a>
       </div>
     </div>
     <div class="hero__rodape">
-      <dl class="hero__dados"><div><dt>Empreendimentos</dt><dd>{len(emps)} selecionados</dd></div><div><dt>Região</dt><dd>{e(reg['nome'])}</dd></div></dl>
-      <a href="#sobre" class="rolar"><span></span>Role</a>
+      <dl class="hero__dados"><div><dt>{t('Empreendimentos', 'Properties')}</dt><dd>{len(lista)} {t('selecionados', 'selected')}</dd></div><div><dt>{t('Região', 'Neighborhood')}</dt><dd>{e(reg['nome'])}</dd></div></dl>
+      <a href="#sobre" class="rolar"><span></span>{t('Role', 'Scroll')}</a>
     </div>
   </div>
 </section>
 
-{numeros(r, com_link=False) if slug == "noroeste" else ""}
+{numeros(r, b) if nor else ""}
 
-<section class="secao{"" if slug == "noroeste" else " tema-claro"}" id="sobre">
+<section class="secao{"" if nor else " tema-claro"}" id="sobre">
   <div class="wrap">
     <div class="intro revelar">
-      <div><span class="rotulo rotulo--linha">Sobre a região</span><h2 class="titulo" style="margin-top:22px">{e(reg['intro_titulo'])}</h2></div>
+      <div><span class="rotulo rotulo--linha">{t('Sobre a região', 'About the neighborhood')}</span><h2 class="titulo" style="margin-top:22px">{e(reg['intro_titulo'])}</h2></div>
       <div class="texto">{intro}</div>
     </div>
-    <div class="cabeca revelar" style="margin:clamp(72px,8vw,120px) 0 0"><span class="rotulo rotulo--linha">O diferencial {"do" if slug == "noroeste" else "da"} {e(reg['rotulo'])}</span></div>
+    <div class="cabeca revelar" style="margin:clamp(72px,8vw,120px) 0 0"><span class="rotulo rotulo--linha">{e(dif_rot)}</span></div>
     <div class="diferenciais revelar" style="margin-top:28px">{difs}</div>
   </div>
 </section>
 
-<section class="secao{" tema-claro" if slug == "noroeste" else ""}" id="empreendimentos">
+<section class="secao{" tema-claro" if nor else ""}" id="empreendimentos">
   <div class="wrap">
     <div class="cabeca revelar">
-      <div class="cabeca__texto"><span class="rotulo rotulo--linha">Curadoria Private</span><h2 class="titulo" style="margin-top:22px">Empreendimentos {"no" if slug == "noroeste" else "na"} <em>{e(reg['rotulo'])}</em>.</h2></div>
+      <div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Curadoria Private', 'Private selection')}</span><h2 class="titulo" style="margin-top:22px">{tit_emp}</h2></div>
     </div>
     <div class="grade">{cards}</div>
   </div>
 </section>
 
-{institucional(r, claro=slug != "noroeste")}
-{contato(r, claro=slug == "noroeste", titulo=f'Receba a curadoria {"do" if slug == "noroeste" else "da"} <em>{e(reg["rotulo"])}</em>.', origem=f'Região {reg["nome"]}')}
+{institucional(r, b, claro=not nor)}
+{contato(r, b, claro=nor, titulo=tit_cont, origem=t('Região ', 'Neighborhood (EN) ') + reg['nome'])}
 </main>
 """
-    html += rodape(r)
-    salvar(slug, html)
+    html += rodape(r, b)
+    salvar(caminho, html)
 
 
 def pagina_empreendimento(x, lp=False):
-    reg = REGIOES[x["regiao"]]
-    r = "../" if lp else "../../"
-    caminho = "lpamazesunside" if lp else f"empreendimentos/{x['slug']}"
+    reg = regioes()[x["regiao"]]
+    caminho = "lpamazesunside/" if lp else prefixo() + f"empreendimentos/{x['slug']}/"
+    r = raiz_rel(caminho)
+    b = r + prefixo()
+    par = (f"empreendimentos/{x['slug']}/", f"en/empreendimentos/{x['slug']}/")
     desc = " ".join(x["descricao"])
     desc_meta = (f"{x['nome']}, {reg['nome']}: {x['metragem']}, {x['dormitorios']}. "
                  + desc[:110].rsplit(" ", 1)[0] + "…")
     texto = "".join(f"<p>{e(p)}</p>" for p in x["descricao"])
     assin = ""
     if x.get("incorporadora"):
-        assin += f'<div><dt>Incorporação</dt><dd>{e(x["incorporadora"])}</dd></div>'
+        assin += f'<div><dt>{t("Incorporação", "Developer")}</dt><dd>{e(x["incorporadora"])}</dd></div>'
     for k, v in x.get("assinaturas", []):
         assin += f"<div><dt>{e(k)}</dt><dd>{e(v)}</dd></div>"
     assin_html = f'<dl class="assinaturas">{assin}</dl>' if assin else ""
@@ -505,33 +662,43 @@ def pagina_empreendimento(x, lp=False):
     fotos = ""
     for i in range(1, n + 1):
         nome = f"{i:02d}"
-        fotos += (f'<button type="button" data-foto="{r}{img_emp(x["slug"], nome)}" aria-label="Ampliar foto {i} de {n}">'
-                  f'<img src="{r}{img_emp(x["slug"], nome, p=True)}" alt="{e(x["nome"])}, foto {i}" loading="lazy" decoding="async"></button>')
+        fotos += (f'<button type="button" data-foto="{r}{img_emp(x["slug"], nome)}" aria-label="{t("Ampliar foto", "Enlarge photo")} {i} {t("de", "of")} {n}">'
+                  f'<img src="{r}{img_emp(x["slug"], nome, p=True)}" alt="{e(x["nome"])}, {t("foto", "photo")} {i}" loading="lazy" decoding="async"></button>')
     classe_gal = "galeria galeria--curta" if n <= 3 else "galeria"
 
-    dados_hero = f'<div><dt>Metragem</dt><dd>{e(x["metragem"])}</dd></div><div><dt>Dormitórios</dt><dd>{e(x["dormitorios"])}</dd></div>'
+    dados_hero = (f'<div><dt>{t("Metragem", "Size")}</dt><dd>{e(x["metragem"])}</dd></div>'
+                  f'<div><dt>{t("Dormitórios", "Bedrooms")}</dt><dd>{e(x["dormitorios"])}</dd></div>')
     if x.get("status"):
         dados_hero += f'<div><dt>Status</dt><dd>{e(x["status"])}</dd></div>'
     elif x.get("incorporadora"):
-        dados_hero += f'<div><dt>Incorporação</dt><dd>{e(x["incorporadora"])}</dd></div>'
+        dados_hero += f'<div><dt>{t("Incorporação", "Developer")}</dt><dd>{e(x["incorporadora"])}</dd></div>'
 
-    outros = [o for o in EMPS if o["slug"] != x["slug"]]
+    outros = [o for o in emps() if o["slug"] != x["slug"]]
     outros.sort(key=lambda o: o["regiao"] != x["regiao"])
-    trilho = "".join(card(r, o) for o in outros)
+    trilho = "".join(card(r, b, o, revelar=False) for o in outros)
     outros_html = "" if lp else f"""<section class="secao" id="outros">
   <div class="wrap">
     <div class="cabeca revelar">
-      <div class="cabeca__texto"><span class="rotulo rotulo--linha">Curadoria Private</span><h2 class="titulo" style="margin-top:22px">Outros <em>empreendimentos</em>.</h2></div>
-      <div class="trilho-nav" data-trilho="trilho-outros"><button type="button" data-dir="-1" aria-label="Anteriores">{seta()}</button><button type="button" data-dir="1" aria-label="Próximos">{seta()}</button></div>
+      <div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Curadoria Private', 'Private selection')}</span><h2 class="titulo" style="margin-top:22px">{t('Outros <em>empreendimentos</em>.', 'Other <em>properties</em>.')}</h2></div>
+      <div class="trilho-nav" data-trilho="trilho-outros"><button type="button" data-dir="-1" aria-label="{t('Anteriores', 'Previous')}">{seta()}</button><button type="button" data-dir="1" aria-label="{t('Próximos', 'Next')}">{seta()}</button></div>
     </div>
-    <div class="trilho" id="trilho-outros">{trilho}</div>
+    <div class="trilho" id="trilho-outros" tabindex="0" aria-label="{t('Outros empreendimentos', 'Other properties')}">{trilho}</div>
+    <div class="trilho-progresso" aria-hidden="true"><span></span></div>
   </div>
 </section>"""
 
+    if en():
+        conheca = f"Discover {x['nome']}"
+        tit_cont = f"Receive details on <em>{e(x['nome'])}</em>."
+        conhecer_reg = f"Discover {reg['rotulo']}"
+    else:
+        conheca = f"Conheça o {x['nome']}"
+        tit_cont = f"Receba as informações do <em>{e(x['nome'])}</em>."
+        conhecer_reg = f"Conhecer {'o' if x['regiao'] == 'noroeste' else 'a'} {reg['rotulo']}"
     titulo_pagina = f"{x['nome']} | {reg['rotulo']} | Beiramar Private"
-    html = head(r, titulo_pagina, desc_meta, caminho + "/", imagem_og=img_emp(x["slug"]),
+    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"]),
                 canonical=f"{DOMINIO}/empreendimentos/{x['slug']}/" if lp else None)
-    html += topo(r, "", lp=lp)
+    html += topo(r, b, par, "", lp=lp)
     html += f"""<main>
 <section class="hero emp-hero">
   {foto_faixas(r + img_emp(x['slug']), r + img_emp(x['slug'], p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
@@ -541,13 +708,13 @@ def pagina_empreendimento(x, lp=False):
       <h1 class="display">{e(x['nome'])}</h1>
       <p class="chamada">{x['chamada']}</p>
       <div class="hero__acoes">
-        <a href="#contato" class="btn btn-claro">Receber informações {seta()}</a>
-        <a href="#galeria" class="btn btn-linha">Ver fotos</a>
+        <a href="#contato" class="btn btn-claro">{t('Receber informações', 'Request information')} {seta()}</a>
+        <a href="#galeria" class="btn btn-linha">{t('Ver fotos', 'View photos')}</a>
       </div>
     </div>
     <div class="hero__rodape">
       <dl class="hero__dados">{dados_hero}</dl>
-      <a href="#sobre" class="rolar"><span></span>Role</a>
+      <a href="#sobre" class="rolar"><span></span>{t('Role', 'Scroll')}</a>
     </div>
   </div>
 </section>
@@ -555,7 +722,7 @@ def pagina_empreendimento(x, lp=False):
 <section class="secao tema-claro" id="sobre">
   <div class="wrap ficha">
     <div class="revelar">
-      <span class="rotulo rotulo--linha">Conheça o {e(x['nome'])}</span>
+      <span class="rotulo rotulo--linha">{e(conheca)}</span>
       <h2 class="titulo">{e(x['metragem'])} · <em>{e(x['dormitorios'])}</em></h2>
       <div class="texto">{texto}</div>
       {assin_html}
@@ -569,7 +736,7 @@ def pagina_empreendimento(x, lp=False):
 
 <section class="secao secao--compacta secao--2" id="galeria">
   <div class="wrap">
-    <div class="cabeca revelar"><div class="cabeca__texto"><span class="rotulo rotulo--linha">Galeria</span><h2 class="titulo" style="margin-top:22px">Para <em>imaginar</em> a vida aqui.</h2></div></div>
+    <div class="cabeca revelar"><div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Galeria', 'Gallery')}</span><h2 class="titulo" style="margin-top:22px">{t('Para <em>imaginar</em> a vida aqui.', 'To <em>imagine</em> life here.')}</h2></div></div>
     <div class="{classe_gal} revelar">{fotos}</div>
   </div>
 </section>
@@ -577,50 +744,56 @@ def pagina_empreendimento(x, lp=False):
 <section class="secao tema-claro" id="localizacao">
   <div class="wrap local">
     <div class="local__cartao moldura revelar">
-      <span class="rotulo rotulo--linha">Localização</span>
-      <p class="local__endereco">{e(x['endereco'])}</p>
-      <a href="{e(x['mapa'])}" class="btn btn-linha" target="_blank" rel="noopener">Como chegar {seta()}</a>
+      <span class="rotulo rotulo--linha">{t('Localização', 'Location')}</span>
+      <p class="local__endereco">{e(x['endereco'])}<br><span style="font-size:.6em;color:var(--cinza)">Brasília · DF</span></p>
+      <a href="{e(x['mapa'])}" class="btn btn-linha" target="_blank" rel="noopener">{t('Como chegar', 'Get directions')} {seta()}</a>
     </div>
-    <a class="revelar" href="{r}{x['regiao']}/" style="display:block">
+    <a class="revelar" href="{b}{x['regiao']}/" style="display:block">
       {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), reg['nome'], 'local__foto', sizes='(max-width: 900px) 100vw, 50vw')}
-      <span class="regiao__rodape" style="margin-top:18px;border-top:0;padding-top:0">Conhecer {"o" if x['regiao'] == 'noroeste' else "a"} {e(reg['rotulo'])} {seta()}</span>
+      <span class="regiao__rodape" style="margin-top:18px;border-top:0;padding-top:0">{e(conhecer_reg)} {seta()}</span>
     </a>
   </div>
 </section>
 
 {outros_html}
-{institucional(r, claro=True)}
-{contato(r, titulo=f'Receba as informações do <em>{e(x["nome"])}</em>.', texto="Plantas, valores e disponibilidade atualizados. Um especialista Private entra em contato com você.", interesse=x['nome'], origem=("Landing page " if lp else "Página ") + x['nome'])}
+{institucional(r, b, claro=True)}
+{contato(r, b, titulo=tit_cont, texto=t("Plantas, valores e disponibilidade atualizados. Um especialista Private entra em contato com você.", "Floor plans, prices and up-to-date availability. A Private specialist will contact you."), interesse=x['nome'], origem=("Landing page " if lp else t("Página ", "Page (EN) ")) + x['nome'])}
 </main>
 {visor()}
 """
-    html += rodape(r)
+    html += rodape(r, b)
     salvar(caminho, html, sitemap=not lp)
 
 
 def pagina_obrigado():
-    r = "../"
-    html = head(r, "Obrigado | Beiramar Private", "Recebemos o seu contato. Um especialista Beiramar Private vai falar com você em breve.", "obrigado/", noindex=True)
-    html += topo(r)
+    caminho = prefixo() + rota("obrigado")
+    r = raiz_rel(caminho)
+    b = r + prefixo()
+    par = (rota("obrigado", "pt"), "en/" + rota("obrigado", "en"))
+    html = head(r, t("Obrigado | Beiramar Private", "Thank you | Beiramar Private"),
+                t("Recebemos o seu contato. Um especialista Beiramar Private vai falar com você em breve.",
+                  "We have received your message. A Beiramar Private specialist will contact you shortly."),
+                caminho, par=par, noindex=True)
+    html += topo(r, b, par)
     html += f"""<main>
 <section class="hero" style="min-height:100svh">
   {foto_faixas(r + img_site('home-hero'), r + img_site('home-hero', True), '', 'hero__midia', eager=True)}
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
-      <span class="rotulo rotulo--linha">Contato recebido</span>
-      <h1 class="display">Obrigado. Seu próximo endereço <em>começa aqui</em>.</h1>
-      <p class="lead">Um especialista Beiramar Private vai entrar em contato com você em breve. Se preferir, continue agora pelo WhatsApp.</p>
+      <span class="rotulo rotulo--linha">{t('Contato recebido', 'Message received')}</span>
+      <h1 class="display">{t('Obrigado. Seu próximo endereço <em>começa aqui</em>.', 'Thank you. Your next address <em>starts here</em>.')}</h1>
+      <p class="lead">{t('Um especialista Beiramar Private vai entrar em contato com você em breve. Se preferir, continue agora pelo WhatsApp.', 'A Beiramar Private specialist will contact you shortly. If you prefer, continue the conversation on WhatsApp now.')}</p>
       <div class="hero__acoes">
-        <a href="{wa()}" data-whats-obrigado class="btn btn-claro" target="_blank" rel="noopener">Continuar no WhatsApp {seta()}</a>
-        <a href="{r}" class="btn btn-linha">Voltar ao site</a>
+        <a href="{wa()}" data-whats-obrigado class="btn btn-claro" target="_blank" rel="noopener">{t('Continuar no WhatsApp', 'Continue on WhatsApp')} {seta()}</a>
+        <a href="{b}" class="btn btn-linha">{t('Voltar ao site', 'Back to the website')}</a>
       </div>
     </div>
   </div>
 </section>
 </main>
 """
-    html += rodape(r)
-    salvar("obrigado", html, sitemap=False)
+    html += rodape(r, b)
+    salvar(caminho, html, sitemap=False)
 
 
 POST_SLUG = "brasilia-onde-a-arquitetura-nao-apenas-abriga-ela-emociona"
@@ -629,9 +802,13 @@ POST_RESUMO = "Do legado de Lúcio Costa e Niemeyer à Quadra 500 do Sudoeste: c
 
 
 def pagina_blog():
-    r = "../"
-    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", "blog/")
-    html += topo(r, "blog")
+    """Blog apenas em português."""
+    caminho = "blog/"
+    r = raiz_rel(caminho)
+    b = r
+    par = ("blog/", None)
+    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", caminho)
+    html += topo(r, b, par, "blog")
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
   <span class="rotulo rotulo--linha">Blog</span>
@@ -651,16 +828,19 @@ def pagina_blog():
     </article>
   </div>
 </div></section>
-{contato(r, origem='Blog')}
+{contato(r, b, origem='Blog')}
 </main>
 """
-    html += rodape(r)
-    salvar("blog", html)
+    html += rodape(r, b)
+    salvar(caminho, html)
 
-    r = "../../"
+    caminho = f"blog/{POST_SLUG}/"
+    r = raiz_rel(caminho)
+    b = r
+    par = (caminho, None)
     corpo = (RAIZ / "dados" / "blog" / f"{POST_SLUG}.html").read_text(encoding="utf-8")
-    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, f"blog/{POST_SLUG}/", imagem_og=img_site("quadra-500-b"))
-    html += topo(r, "blog")
+    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, caminho, imagem_og=img_site("quadra-500-b"))
+    html += topo(r, b, par, "blog")
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
   <a href="../" class="rotulo rotulo--linha">Blog</a>
@@ -671,29 +851,35 @@ def pagina_blog():
   {foto_faixas(r + img_site('quadra-500-b'), r + img_site('quadra-500-b', True), 'Vista aérea da Quadra 500 do Sudoeste', 'faixas--base', sizes='100vw').replace('class="faixas faixas--base"', 'class="faixas faixas--base" style="aspect-ratio:21/9;margin-bottom:clamp(48px,6vw,80px)"')}
   <article class="artigo">{corpo}</article>
 </div></section>
-{contato(r, titulo='Conheça a <em>Quadra 500</em> com a curadoria Private.', interesse='', origem='Blog: ' + POST_TITULO)}
+{contato(r, b, titulo='Conheça a <em>Quadra 500</em> com a curadoria Private.', origem='Blog: ' + POST_TITULO)}
 </main>
 """
-    html += rodape(r)
-    salvar(f"blog/{POST_SLUG}", html)
+    html += rodape(r, b)
+    salvar(caminho, html)
 
 
 def pagina_privacidade():
-    r = "../"
-    corpo = (RAIZ / "dados" / "privacidade.html").read_text(encoding="utf-8")
-    html = head(r, "Privacidade e cookies | Beiramar Private", "Como a Beiramar Private trata os dados pessoais de quem visita o site e entra em contato, conforme a LGPD.", "privacidade/")
-    html += topo(r)
+    caminho = prefixo() + rota("privacidade")
+    r = raiz_rel(caminho)
+    b = r + prefixo()
+    par = (rota("privacidade", "pt"), "en/" + rota("privacidade", "en"))
+    corpo = (RAIZ / "dados" / t("privacidade.html", "privacidade-en.html")).read_text(encoding="utf-8")
+    html = head(r, t("Privacidade e cookies | Beiramar Private", "Privacy and cookies | Beiramar Private"),
+                t("Como a Beiramar Private trata os dados pessoais de quem visita o site e entra em contato, conforme a LGPD.",
+                  "How Beiramar Private handles the personal data of website visitors and contacts, under Brazil’s LGPD."),
+                caminho, par=par)
+    html += topo(r, b, par)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
-  <span class="rotulo rotulo--linha">Documentos legais</span>
-  <h1 class="titulo">Privacidade e <em>cookies</em>.</h1>
-  <p class="lead">Como tratamos os dados pessoais de quem visita este site e entra em contato conosco, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</p>
+  <span class="rotulo rotulo--linha">{t('Documentos legais', 'Legal')}</span>
+  <h1 class="titulo">{t('Privacidade e <em>cookies</em>.', 'Privacy and <em>cookies</em>.')}</h1>
+  <p class="lead">{t('Como tratamos os dados pessoais de quem visita este site e entra em contato conosco, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).', 'How we handle the personal data of those who visit this website and contact us, under Brazil’s General Data Protection Law (Law no. 13,709/2018).')}</p>
 </div></section>
 <section class="secao secao--compacta tema-claro"><div class="wrap"><article class="artigo legal">{corpo}</article></div></section>
 </main>
 """
-    html += rodape(r)
-    salvar("privacidade", html)
+    html += rodape(r, b)
+    salvar(caminho, html)
 
 
 def redirecionar(antigo, novo_rel, novo_abs):
@@ -718,21 +904,22 @@ def pagina_404():
     # Servida em qualquer endereço inexistente: usa caminhos absolutos a partir da raiz do domínio.
     r = "/"
     html = head(r, "Página não encontrada | Beiramar Private", "Esta página não existe ou mudou de endereço.", "404.html", noindex=True)
-    html += topo(r)
+    html += topo(r, r, ("", "en/"))
     html += f"""<main>
 <section class="pagina-topo" style="min-height:80svh;display:flex;align-items:center"><div class="wrap">
-  <span class="rotulo rotulo--linha">Erro 404</span>
+  <span class="rotulo rotulo--linha">Erro 404 · Page not found</span>
   <h1 class="titulo">Este endereço <em>não existe</em>.</h1>
-  <p class="lead">Mas temos outros que valem a visita.</p>
-  <div class="hero__acoes"><a href="/" class="btn btn-claro">Ir para o início {seta()}</a><a href="/#empreendimentos" class="btn btn-linha">Ver empreendimentos</a></div>
+  <p class="lead">Mas temos outros que valem a visita. · This page does not exist, but our properties do.</p>
+  <div class="hero__acoes"><a href="/" class="btn btn-claro">Ir para o início {seta()}</a><a href="/en/" class="btn btn-linha">English version</a></div>
 </div></section>
 </main>
 """
-    html += rodape(r)
+    html += rodape(r, r)
     (RAIZ / "404.html").write_text(html, encoding="utf-8")
 
 
 def main():
+    global LANG
     # limpa redirecionamentos antigos gerados anteriormente
     reg_arquivo = RAIZ / "dados" / ".redirecionamentos"
     if reg_arquivo.exists():
@@ -740,22 +927,26 @@ def main():
             alvo = RAIZ / p
             if alvo.is_dir() and (alvo / "index.html").exists() and "location.replace" in (alvo / "index.html").read_text():
                 shutil.rmtree(alvo)
+    if (RAIZ / "en").exists():
+        shutil.rmtree(RAIZ / "en")
 
-    pagina_inicio()
-    for slug in REGIOES:
-        pagina_regiao(slug)
-    for x in EMPS:
-        pagina_empreendimento(x)
-    if "amaze-sunside" in EMP:
-        pagina_empreendimento(EMP["amaze-sunside"], lp=True)
-    pagina_obrigado()
+    for LANG in ("pt", "en"):
+        pagina_inicio()
+        for slug in REG_PT:
+            pagina_regiao(slug)
+        for x in emps():
+            pagina_empreendimento(x)
+        pagina_obrigado()
+        pagina_privacidade()
+    LANG = "pt"
+    if any(x["slug"] == "amaze-sunside" for x in EMPS_PT):
+        pagina_empreendimento(next(x for x in EMPS_PT if x["slug"] == "amaze-sunside"), lp=True)
     pagina_blog()
-    pagina_privacidade()
     pagina_404()
 
     # endereços antigos do WordPress → novos
     redirs = []
-    for x in EMPS:
+    for x in EMPS_PT:
         for antigo in x.get("antigos", []):
             redirs.append(redirecionar(antigo, f"../empreendimentos/{x['slug']}/", f"{DOMINIO}/empreendimentos/{x['slug']}/"))
     redirs.append(redirecionar("quadra500", "../quadra-500/", f"{DOMINIO}/quadra-500/"))
@@ -766,7 +957,7 @@ def main():
     (RAIZ / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
     (RAIZ / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
     (RAIZ / ".nojekyll").write_text("")
-    print(f"{len(geradas)} páginas geradas, {len(redirs)} redirecionamentos.")
+    print(f"{len(geradas)} páginas geradas (pt + en), {len(redirs)} redirecionamentos.")
 
 
 if __name__ == "__main__":

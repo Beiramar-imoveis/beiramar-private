@@ -1,9 +1,20 @@
-// Beiramar Private — comportamento das páginas
-// Menu do celular, cabeçalho ao rolar, animações de entrada, filtros, carrossel,
-// galeria com visualizador e formulário de contato (registra o lead por e-mail e
-// leva para a página de obrigado, que oferece seguir a conversa pelo WhatsApp).
+// Beiramar Private — comportamento das páginas (português e inglês)
+// Menu do celular (mesmo modelo dos sites do Grupo Beiramar e da BRM Asset), cabeçalho ao rolar,
+// animações de entrada, filtros, carrossel, galeria com visualizador e formulário de contato
+// (registra o lead por e-mail e leva para a página de obrigado, que oferece seguir no WhatsApp).
 (function () {
   var doc = document.documentElement;
+  var EN = (doc.lang || '').toLowerCase().indexOf('en') === 0;
+  var T = EN ? {
+    abrir: 'Open menu', fechar: 'Close menu', enviando: 'Sending...',
+    erro: 'We could not send your message right now. Please try again or ',
+    erroLink: 'chat on WhatsApp', ola: 'Hello! My name is ', interesse: 'I am interested in: ', busca: 'Looking for: '
+  } : {
+    abrir: 'Abrir menu', fechar: 'Fechar menu', enviando: 'Enviando...',
+    erro: 'Não conseguimos enviar agora. Tente de novo ou ',
+    erroLink: 'fale pelo WhatsApp', ola: 'Olá! Sou ', interesse: 'Tenho interesse em: ', busca: 'Busco: '
+  };
+  var WHATS = 'https://wa.me/556131426671?text=';
 
   /* ---------- cabeçalho e menu ---------- */
   var topo = document.getElementById('topo');
@@ -15,18 +26,18 @@
   }
   if (topo && toggle && nav) {
     var iconeAbrir = toggle.innerHTML;
-    var iconeFechar = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    var iconeFechar = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
     var setMenu = function (aberto) {
       topo.classList.toggle('aberto', aberto);
       doc.classList.toggle('menu-aberto', aberto);
       toggle.innerHTML = aberto ? iconeFechar : iconeAbrir;
       toggle.setAttribute('aria-expanded', String(aberto));
-      toggle.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+      toggle.setAttribute('aria-label', aberto ? T.fechar : T.abrir);
     };
     toggle.addEventListener('click', function () { setMenu(!topo.classList.contains('aberto')); });
     nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && topo.classList.contains('aberto')) { setMenu(false); toggle.focus(); } });
-    window.addEventListener('resize', function () { if (window.innerWidth > 960) setMenu(false); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 960 && topo.classList.contains('aberto')) setMenu(false); });
     window.addEventListener('pageshow', function () { setMenu(false); });
   }
 
@@ -55,9 +66,70 @@
   document.querySelectorAll('[data-trilho]').forEach(function (navT) {
     var trilho = document.getElementById(navT.getAttribute('data-trilho'));
     if (!trilho) return;
-    var passo = function () { var c = trilho.firstElementChild; return c ? c.getBoundingClientRect().width + 28 : 320; };
-    navT.querySelector('[data-dir="-1"]').addEventListener('click', function () { trilho.scrollBy({ left: -passo(), behavior: 'smooth' }); });
-    navT.querySelector('[data-dir="1"]').addEventListener('click', function () { trilho.scrollBy({ left: passo(), behavior: 'smooth' }); });
+    var ant = navT.querySelector('[data-dir="-1"]'), prox = navT.querySelector('[data-dir="1"]');
+    var barra = trilho.parentNode.querySelector('.trilho-progresso span');
+    var cards = function () { return Array.prototype.slice.call(trilho.children); };
+
+    // posição de cada card relativa ao início do trilho
+    var posicoes = function () {
+      var base = trilho.getBoundingClientRect().left - trilho.scrollLeft;
+      return cards().map(function (c) { return Math.round(c.getBoundingClientRect().left - base); });
+    };
+    var maximo = function () { return trilho.scrollWidth - trilho.clientWidth; };
+    var irPara = function (dir) {
+      var pos = posicoes(), x = trilho.scrollLeft, alvo;
+      if (dir > 0) alvo = pos.filter(function (p) { return p > x + 4; })[0];
+      else alvo = pos.filter(function (p) { return p < x - 4; }).pop();
+      if (alvo === undefined) alvo = dir > 0 ? maximo() : 0;
+      trilho.scrollTo({ left: Math.min(alvo, maximo()), behavior: 'smooth' });
+    };
+    var atualizar = function () {
+      var max = maximo(), x = trilho.scrollLeft;
+      ant.disabled = x <= 4;
+      prox.disabled = x >= max - 4;
+      if (barra) {
+        var visivel = trilho.clientWidth / trilho.scrollWidth;
+        barra.style.width = (visivel * 100) + '%';
+        barra.style.left = (max > 0 ? (x / max) * (1 - visivel) * 100 : 0) + '%';
+      }
+    };
+    ant.addEventListener('click', function () { irPara(-1); });
+    prox.addEventListener('click', function () { irPara(1); });
+    trilho.addEventListener('scroll', function () { window.requestAnimationFrame(atualizar); }, { passive: true });
+    window.addEventListener('resize', atualizar);
+    trilho.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); irPara(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); irPara(-1); }
+    });
+
+    // arrastar com o mouse (no toque, a rolagem nativa já funciona)
+    var arrasto = null;
+    trilho.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      arrasto = { x: e.clientX, inicio: trilho.scrollLeft, moveu: false };
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!arrasto) return;
+      var dx = e.clientX - arrasto.x;
+      if (!arrasto.moveu && Math.abs(dx) > 6) { arrasto.moveu = true; trilho.classList.add('arrastando'); }
+      if (arrasto.moveu) trilho.scrollLeft = arrasto.inicio - dx;
+    });
+    window.addEventListener('pointerup', function () {
+      if (!arrasto) return;
+      var moveu = arrasto.moveu, dx = trilho.scrollLeft - arrasto.inicio;
+      arrasto = null;
+      if (!moveu) return;
+      trilho.classList.remove('arrastando');
+      // encaixa no card mais próximo na direção do arrasto
+      var pos = posicoes(), x = trilho.scrollLeft;
+      var alvo = dx > 0 ? pos.filter(function (p) { return p >= x - 4; })[0] : pos.filter(function (p) { return p <= x + 4; }).pop();
+      trilho.scrollTo({ left: Math.min(alvo === undefined ? x : alvo, maximo()), behavior: 'smooth' });
+      // evita abrir o card ao soltar o mouse depois de arrastar
+      var bloq = function (ev) { ev.preventDefault(); ev.stopPropagation(); };
+      trilho.addEventListener('click', bloq, true);
+      setTimeout(function () { trilho.removeEventListener('click', bloq, true); }, 60);
+    });
+    atualizar();
   });
 
   /* ---------- galeria + visualizador ---------- */
@@ -94,8 +166,8 @@
   }
 
   /* ---------- formulário de contato ---------- */
-  // Máscara simples de telefone: (61) 99999-9999
-  document.querySelectorAll('input[type="tel"]').forEach(function (inp) {
+  // Máscara de telefone brasileiro, só nos campos marcados (a versão em inglês aceita números internacionais)
+  document.querySelectorAll('input[data-mascara="br"]').forEach(function (inp) {
     inp.addEventListener('input', function () {
       var d = inp.value.replace(/\D/g, '').slice(0, 11);
       var r = d;
@@ -114,27 +186,27 @@
       var original = btn.innerHTML;
       var dados = new FormData(form);
       var interesse = dados.get('interesse') || 'Beiramar Private';
-      dados.set('subject', 'Novo contato · Beiramar Private · ' + interesse);
+      dados.set('subject', 'Novo contato · Beiramar Private' + (EN ? ' (EN)' : '') + ' · ' + interesse);
       dados.set('pagina', location.href);
 
       // Mensagem pronta para seguir a conversa no WhatsApp
-      var partes = ['Olá! Sou ' + (dados.get('nome') || '') + '.', 'Tenho interesse em: ' + interesse + '.'];
-      if (dados.get('quartos')) partes.push('Busco: ' + dados.get('quartos') + '.');
+      var partes = [T.ola + (dados.get('nome') || '') + '.', T.interesse + interesse + '.'];
+      if (dados.get('quartos')) partes.push(T.busca + dados.get('quartos') + '.');
       if (dados.get('mensagem')) partes.push(dados.get('mensagem'));
       var msg = partes.join(' ');
 
-      btn.disabled = true; btn.textContent = 'Enviando...';
+      btn.disabled = true; btn.textContent = T.enviando;
       if (status) status.textContent = '';
       fetch(form.action, { method: 'POST', body: dados, headers: { Accept: 'application/json' } })
         .then(function (r) { if (!r.ok) throw new Error('falha'); return r.json(); })
         .then(function () {
-          if (window.gtag) window.gtag('event', 'generate_lead', { interesse: interesse });
+          if (window.gtag) window.gtag('event', 'generate_lead', { interesse: interesse, idioma: EN ? 'en' : 'pt' });
           var destino = form.getAttribute('data-obrigado') || 'obrigado/';
           location.href = destino + '?msg=' + encodeURIComponent(msg);
         })
         .catch(function () {
           btn.disabled = false; btn.innerHTML = original;
-          if (status) status.innerHTML = 'Não conseguimos enviar agora. Tente de novo ou <a href="https://wa.me/556131426671?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="text-decoration:underline">fale pelo WhatsApp</a>.';
+          if (status) status.innerHTML = T.erro + '<a href="' + WHATS + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="text-decoration:underline">' + T.erroLink + '</a>.';
         });
     });
   });
@@ -143,6 +215,6 @@
   var botaoWhats = document.querySelector('[data-whats-obrigado]');
   if (botaoWhats) {
     var m = new URLSearchParams(location.search).get('msg');
-    if (m) botaoWhats.href = 'https://wa.me/556131426671?text=' + encodeURIComponent(m);
+    if (m) botaoWhats.href = WHATS + encodeURIComponent(m);
   }
 })();

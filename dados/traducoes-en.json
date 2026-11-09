@@ -1,0 +1,235 @@
+{
+  "_leia-me": "Versão em inglês dos textos de dados/empreendimentos.json. Cada empreendimento e região usa o mesmo 'slug' do arquivo em português. Campos ausentes aqui caem no texto em português.",
+  "status": {
+    "Pronto para morar": "Ready to move in",
+    "Obras avançadas": "Advanced construction",
+    "Obras em andamento": "Under construction"
+  },
+  "rotulos_assinatura": {
+    "Arquitetura": "Architecture",
+    "Interiores": "Interior design",
+    "Paisagismo": "Landscaping",
+    "Decoração": "Interior design",
+    "Decoração das áreas comuns": "Common areas design",
+    "Arquitetura e decoração": "Architecture and interiors"
+  },
+  "regioes": {
+    "noroeste": {
+      "nome": "Noroeste",
+      "rotulo": "Noroeste",
+      "titulo": "Noroeste:",
+      "titulo_destaque": "a new standard of <em>living</em> in Brasília.",
+      "subtitulo": "A Private selection of homes in the most sought-after neighborhood of Brasília's Plano Piloto.",
+      "intro_titulo": "One of the most valued and best-planned neighborhoods in the Plano Piloto",
+      "intro": [
+        "Noroeste brings together contemporary architecture, green areas and strategic mobility, with easy access to the city's main axes, all within the Plano Piloto, Brasília's modernist core and a UNESCO World Heritage Site.",
+        "With an established residential profile and strong demand, the neighborhood offers homes that combine quality of life, comfort and long-term appreciation potential."
+      ],
+      "diferenciais": [
+        ["Planned and sustainable", "Designed from scratch, with green areas, bike paths and infrastructure built for contemporary living."],
+        ["Contemporary architecture", "Signature projects, striking façades and generous floor plans, in tune with Brasília's modernism."],
+        ["Residential quality of life", "Parks, neighborhood shops and a calm pace, minutes away from the city's central axes."],
+        ["Appreciation and liquidity", "An increasingly scarce supply, with demand that remains high."]
+      ]
+    },
+    "quadra-500": {
+      "nome": "Quadra 500 · Sudoeste",
+      "rotulo": "Quadra 500",
+      "titulo": "Quadra 500:",
+      "titulo_destaque": "an address that <em>cannot be repeated</em>.",
+      "subtitulo": "A Private selection of homes on the last strip of Sudoeste, facing the green.",
+      "intro_titulo": "Where Brasília has already proven its value",
+      "intro": [
+        "Quadra 500 in Sudoeste is one of the most refined movements in Brasília's luxury market: a rare, low-density address for those who value space, privacy and real quality of life.",
+        "Located on the last strip of Sudoeste, facing Sucupiras Park, Quadra 500 offers what cannot be replicated: open views of nature, little urban interference and a distinguished residential atmosphere. Generous floor plans, few units per building and high construction standards make it a wealth decision for those who know that exclusivity, location and scarcity are the true drivers of long-term value."
+      ],
+      "diferenciais": [
+        ["A rare address in Sudoeste", "The last strip of the neighborhood, with low density and few units per project."],
+        ["24-hour security", "A monitoring center that watches over the area day and night."],
+        ["Integrated with nature", "Facing Sucupiras Park, with open views of the green."],
+        ["Real estate appreciation", "Scarce land and high construction standards sustain long-term value."]
+      ]
+    }
+  },
+  "numeros_noroeste": {
+    "titulo": "The numbers speak for themselves",
+    "destaque": "Noroeste has already sold <em>94%</em> of everything launched.",
+    "itens": [
+      ["13,188 units launched across 169 developments.", "12,406 already sold."],
+      ["Only", "782 units left on the market."],
+      ["In the first half of 2026, Noroeste led new home sales in the Federal District:", "402 units, up 44% on the previous period."]
+    ]
+  },
+  "empreendimentos": {
+    "yard": {
+      "chamada": "Ready to <em>move in</em>, from the ground floor to the penthouse.",
+      "metragem": "110 to 224 m²",
+      "dormitorios": "3 bedrooms",
+      "descricao": [
+        "A premium development in Noroeste, with contemporary architecture and floor plans designed to make life flow naturally. Three-bedroom apartments and duplex penthouses, focused on comfort, performance and high-end finishes.",
+        "From the ground floor to the rooftop, leisure areas serve different moments of the day and are delivered fully equipped and furnished. The façade is clad entirely in granite, and the project brings together signature architecture, interiors and landscaping."
+      ],
+      "unidades": [
+        {"titulo": "Apartments", "itens": ["3 bedrooms (1 suite)", "110 to 135 m²", "2 to 4 parking spaces"]},
+        {"titulo": "Duplex penthouses", "itens": ["224 to 275 m²", "2 to 4 parking spaces"]}
+      ],
+      "nota": "Granite façade and common areas delivered fully equipped and furnished."
+    },
+    "azzure": {
+      "chamada": "Four suites, two balconies and natural <em>light</em> in every room.",
+      "metragem": "213 to 481 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Azzure is a premium, contemporary development in the heart of Noroeste, designed to take residential living to a new level of comfort, spaciousness and exclusivity.",
+        "With intelligent architecture and impeccable floor plans, every detail ensures cross ventilation, abundant natural light and fluid flow between rooms. The project offers only high-end units with 4 suites and two balconies."
+      ],
+      "unidades": [
+        {"titulo": "Linear apartments", "itens": ["4 suites", "213 to 287 m²", "4 parking spaces"]},
+        {"titulo": "Through or duplex penthouses", "itens": ["4 suites", "409 to 481 m²", "4 parking spaces"]}
+      ],
+      "nota": "Every unit runs front to back, for maximum ventilation, privacy and comfort."
+    },
+    "singular": {
+      "chamada": "Live in Noroeste <em>without waiting</em> for construction.",
+      "metragem": "152 to 336 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Singular Noroeste, by Soltec Engenharia, stands on one of the most valued blocks in Noroeste, next to Burle Marx Park. With contemporary architecture and generous floor plans, it was designed for comfort, privacy and quality of life, with natural light, cross ventilation and integrated living spaces.",
+        "Leisure is complete: swimming pool, spa, gym, party room, gourmet area and lounges, in a refined residential project that is ready to move in."
+      ],
+      "unidades": [
+        {"titulo": "Linear apartments", "itens": ["4 suites", "152 to 173 m²", "3 parking spaces"]},
+        {"titulo": "Through penthouses", "itens": ["4 suites", "291 to 336 m²", "4 parking spaces"]}
+      ],
+      "nota": "Next to Burle Marx Park, with complete leisure areas and ready to move in."
+    },
+    "season": {
+      "chamada": "One of the <em>last</em> ready units in a neighborhood that is almost sold out.",
+      "metragem": "145 to 333 m²",
+      "dormitorios": "3 or 4 suites",
+      "descricao": [
+        "Season Noroeste is a top-tier development in the heart of SQNW 304, one of the most valued blocks in Noroeste. Designed by Dávila Arquitetura, it combines elegance, comfort and functionality, with an imposing façade in granite, laminated glass and stainless-finish aluminum.",
+        "Common areas designed by Márcia Bizzi include a heated rooftop pool, barbecue and gourmet area, plus a playroom, game room, gym and gourmet lounge on the ground floor."
+      ],
+      "unidades": [
+        {"titulo": "Apartments", "itens": ["3 and 4 suites", "145.28 to 162.69 m²"]},
+        {"titulo": "Duplex penthouses", "itens": ["290.71 to 333.63 m²"]}
+      ],
+      "nota": "Floor plans designed for thermal comfort, natural ventilation and integrated spaces."
+    },
+    "amaze-sunside": {
+      "chamada": "Compact in size, <em>generous</em> in solutions.",
+      "metragem": "31 to 132 m²",
+      "dormitorios": "Studios, 1 and 2 bedrooms",
+      "descricao": [
+        "Amaze Sunside, by Villela & Carvalho, is a contemporary development in Noroeste designed for a dynamic, urban lifestyle. Modern lines and smart design bring together studios and compact apartments for those who value practicality, technology and appreciation.",
+        "To live in or invest, Amaze combines functional floor plans with complete leisure and convenience: equipped gym, gourmet lounge, social areas and modern security and automation systems."
+      ],
+      "unidades": [
+        {"titulo": "Residential units", "itens": ["Studios, 1 and 2 bedrooms", "31 to 63 m²"]},
+        {"titulo": "Retail units", "itens": ["59 to 132 m²"]}
+      ],
+      "nota": "Contemporary living in Noroeste, with strong appreciation potential."
+    },
+    "parque-alvorada": {
+      "chamada": "Privacy, greenery and <em>penthouses</em> with private pools.",
+      "metragem": "230 to 621 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Parque Alvorada is a ready-to-move-in development by Base Incorporações in Quadra 500, designed for comfort, privacy and integration with nature in one of the most distinguished areas of Sudoeste."
+      ],
+      "unidades": [
+        {"titulo": "Middle units", "itens": ["230 m²", "4 suites", "Master suite with double sink and bathtub", "4 parking spaces"]},
+        {"titulo": "Corner units", "itens": ["244 m²", "4 suites", "Master suite with double sink and bathtub", "4 parking spaces"]},
+        {"titulo": "Penthouses", "itens": ["598 to 621 m²", "Private elevator with 4 stops", "Pool, spa and gourmet area", "6 parking spaces"]}
+      ],
+      "nota": "Units run front to back, with a high level of privacy and thermal comfort."
+    },
+    "parque-cidade": {
+      "chamada": "Duplex rooftops with a private <em>elevator</em>.",
+      "metragem": "122 to 395 m²",
+      "dormitorios": "3 and 4 suites",
+      "descricao": [
+        "Parque Cidade is a development by Base Incorporações in Quadra 500, Sudoeste, designed to combine sophistication, mobility and family comfort in one of Brasília's most valued areas.",
+        "With intelligent architecture and generous floor plans, the project favors cross ventilation, natural light and integrated living spaces."
+      ],
+      "unidades": [
+        {"titulo": "Apartments", "itens": ["3 suites", "122 to 126 m²", "Balcony, powder room and storage locker", "2 parking spaces"]},
+        {"titulo": "Duplex rooftops", "itens": ["4 suites", "369 to 395 m²", "Private elevator", "4 parking spaces"]}
+      ],
+      "nota": "Units run front to back, with a high level of privacy and thermal comfort."
+    },
+    "parque-esplanada": {
+      "chamada": "Space and <em>elegance</em> facing the green.",
+      "metragem": "167 to 367 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Parque Esplanada is a ready-to-move-in development by Base Incorporações in Quadra 500, offering space, elegance and a privileged location in Sudoeste.",
+        "Contemporary architecture and high construction standards deliver real comfort and exclusivity in every detail."
+      ],
+      "unidades": [
+        {"titulo": "Middle units", "itens": ["4 suites", "167.60 m²", "Powder room", "3 parking spaces"]},
+        {"titulo": "Corner units", "itens": ["4 suites", "186.20 m²", "Powder room", "3 parking spaces"]},
+        {"titulo": "Rooftops", "itens": ["4 suites", "329 to 367 m²", "Private internal elevator", "4 parking spaces"]}
+      ],
+      "nota": "Units run front to back, with abundant natural light and a high level of privacy."
+    },
+    "parque-itamaraty": {
+      "chamada": "<em>Family</em> comfort at a privileged address.",
+      "metragem": "172 to 548 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Parque Itamaraty is a ready-to-move-in development by Base Incorporações in Quadra 500, designed for family comfort, sophistication and quality of life in a privileged location in Sudoeste."
+      ],
+      "unidades": [
+        {"titulo": "Apartments", "itens": ["4 suites", "172 m²", "Master suite with walk-in closet space", "3 parking spaces"]},
+        {"titulo": "Penthouses", "itens": ["548 m²", "Private elevator", "Pool, spa and gourmet area", "6 parking spaces"]}
+      ],
+      "nota": "Generous floor plans with integrated spaces and high construction standards."
+    },
+    "parque-monumental": {
+      "chamada": "For those who seek <em>exclusivity</em> and legacy.",
+      "metragem": "199 to 665 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Parque Monumental, by Base Incorporações, is one of the most imposing projects in Quadra 500. Ready to move in, it features striking architecture and generous floor plans that favor integrated spaces and natural light."
+      ],
+      "unidades": [
+        {"titulo": "Apartments", "itens": ["4 suites", "199 to 241 m²", "Powder room", "3 or 4 parking spaces"]},
+        {"titulo": "Penthouses", "itens": ["553 to 665 m²", "Car room and private hall", "Private elevator", "6 parking spaces"]}
+      ],
+      "nota": "A development for those who seek exclusivity and legacy in Sudoeste."
+    },
+    "parque-nacional": {
+      "chamada": "Rooftops with a private <em>pool</em> and gourmet area.",
+      "metragem": "146 to 392 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Parque Nacional, by Base Incorporações, features contemporary architecture and functional floor plans designed for family comfort and wealth preservation in Quadra 500.",
+        "Spacious, well-lit rooms create a refined and integrated living experience."
+      ],
+      "unidades": [
+        {"titulo": "Middle units", "itens": ["4 suites", "146 m²", "3 parking spaces"]},
+        {"titulo": "Corner units", "itens": ["4 suites", "151 m²", "3 parking spaces"]},
+        {"titulo": "Rooftops", "itens": ["4 suites", "360 to 392 m²", "Private internal elevator", "Pool and gourmet area", "4 parking spaces"]}
+      ],
+      "nota": "Smart floor plans, integrated spaces and high construction standards."
+    },
+    "parque-planalto": {
+      "chamada": "Spacious suites and generous <em>balconies</em>.",
+      "metragem": "132 to 370 m²",
+      "dormitorios": "3 and 4 suites",
+      "descricao": [
+        "Parque Planalto is a ready-to-move-in development by Base Incorporações in Quadra 500, designed for space, comfort and functionality.",
+        "Floor plans favor integrated spaces, spacious suites and generous balconies."
+      ],
+      "unidades": [
+        {"titulo": "Corner apartments", "itens": ["3 suites", "132.61 m²", "2 parking spaces"]},
+        {"titulo": "Middle apartments", "itens": ["4 suites", "143.70 to 145.65 m²", "3 parking spaces"]},
+        {"titulo": "Middle duplex rooftops", "itens": ["4 suites", "292 to 353 m²", "4 parking spaces"]},
+        {"titulo": "Corner duplex rooftops", "itens": ["4 suites", "370 m²", "Private elevator", "4 parking spaces"]}
+      ],
+      "nota": "Smart layout and high construction standards."
+    }
+  }
+}
