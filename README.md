@@ -32,7 +32,7 @@ python3 ferramentas/gerar_site.py
 
 ## Identidade visual
 
-- **Cor:** Preto Private `#131415` dominante, com branco e cinzas neutros.
+- **Cores:** Preto Private `#131415` e Branco Private `#FDFDFD` (sem branco puro), alternados por seção com a classe `.tema-claro`, mais cinzas neutros.
 - **Tipografia:** DM Sans (mesma família dos sites do Grupo). Destaques em **Didot Italic** (`fontes/didot-italic.woff2`), a mesma dos posts.
 - **Grafismos, como elementos independentes (CSS):**
   - `.moldura`: contorno fino com o canto em L deslocado no ângulo superior direito (proporções medidas na assinatura original). Variações: `.moldura--inferior`, `.moldura--canto`; ajuste com `--m-linha`, `--m-canto`, `--m-larg`, `--m-alt`.

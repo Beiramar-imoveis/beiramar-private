@@ -55,9 +55,11 @@ def seta():
             '<path d="M0 6h62M57 1l5 5-5 5"/></svg>')
 
 
-def assinatura(r):
-    """Logo original da Beiramar Private (arquivo oficial, sem alterações)."""
-    return (f'<img class="assinatura" src="{r}imagens/site/logo-beiramar-private.png" '
+def assinatura(r, preta=False):
+    """Logo original da Beiramar Private (arquivos oficiais, sem alterações).
+    Versão branca sobre o Preto Private; versão preta sobre o Branco Private."""
+    arq = "logo-beiramar-private-preta.png" if preta else "logo-beiramar-private.png"
+    return (f'<img class="assinatura" src="{r}imagens/site/{arq}" '
             f'alt="Beiramar Private" width="716" height="428">')
 
 
@@ -216,10 +218,11 @@ def opcoes_interesse(selecionado=""):
     return "".join(out)
 
 
-def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', texto=None, interesse="", origem="Site"):
+def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', texto=None, interesse="", origem="Site", claro=False):
     texto = texto or ("Conte o que você procura. Um especialista Private retorna com opções selecionadas "
                       "para o seu perfil, com discrição e sem compromisso.")
-    return f"""<section class="secao" id="contato">
+    tema = " tema-claro" if claro else ""
+    return f"""<section class="secao{tema}" id="contato">
   <div class="wrap contato">
     <div class="revelar">
       <span class="rotulo rotulo--linha">Atendimento Private</span>
@@ -250,10 +253,11 @@ def contato(r, titulo='Vamos encontrar o seu <em>próximo endereço</em>.', text
 """
 
 
-def institucional(r):
-    return f"""<section class="secao secao--compacta secao--2">
+def institucional(r, claro=False):
+    tema = " tema-claro" if claro else " secao--2"
+    return f"""<section class="secao secao--compacta{tema}">
   <div class="wrap institucional revelar">
-    {assinatura(r)}
+    {assinatura(r, preta=claro)}
     <div>
       <span class="rotulo rotulo--linha">Beiramar Private</span>
       <p class="subtitulo" style="margin:20px 0 18px;max-width:760px">A frente de alto padrão da Beiramar, dedicada à curadoria de imóveis exclusivos nas regiões mais valorizadas de Brasília.</p>
@@ -352,7 +356,7 @@ def pagina_inicio():
   </div>
 </section>
 
-<section class="secao" id="sobre">
+<section class="secao tema-claro" id="sobre">
   <div class="wrap sobre">
     <figure class="sobre__foto moldura revelar"><img src="{img_site('sobre')}" srcset="{img_site('sobre', True)} 760w, {img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="Fachada noturna de empreendimento de alto padrão no Noroeste" loading="lazy" decoding="async"></figure>
     <div class="revelar">
@@ -372,7 +376,7 @@ def pagina_inicio():
   </div>
 </section>
 
-<section class="secao secao--compacta" id="regioes" style="padding-top:0">
+<section class="secao" id="regioes">
   <div class="wrap">
     <div class="cabeca revelar">
       <div class="cabeca__texto"><span class="rotulo rotulo--linha">Onde atuamos</span><h2 class="titulo" style="margin-top:22px">Dois endereços. <em>Nenhum</em> comum.</h2></div>
@@ -381,7 +385,7 @@ def pagina_inicio():
   </div>
 </section>
 
-<section class="secao" id="empreendimentos">
+<section class="secao tema-claro" id="empreendimentos">
   <div class="wrap">
     <div class="cabeca revelar">
       <div class="cabeca__texto"><span class="rotulo rotulo--linha">Curadoria Private</span><h2 class="titulo" style="margin-top:22px">Empreendimentos <em>selecionados</em>.</h2></div>
@@ -410,7 +414,7 @@ def pagina_inicio():
   </div>
 </section>
 
-{contato(r, origem='Página inicial')}
+{contato(r, origem='Página inicial', claro=True)}
 </main>
 """
     html += rodape(r)
@@ -449,7 +453,9 @@ def pagina_regiao(slug):
   </div>
 </section>
 
-<section class="secao" id="sobre">
+{numeros(r, com_link=False) if slug == "noroeste" else ""}
+
+<section class="secao{"" if slug == "noroeste" else " tema-claro"}" id="sobre">
   <div class="wrap">
     <div class="intro revelar">
       <div><span class="rotulo rotulo--linha">Sobre a região</span><h2 class="titulo" style="margin-top:22px">{e(reg['intro_titulo'])}</h2></div>
@@ -460,9 +466,7 @@ def pagina_regiao(slug):
   </div>
 </section>
 
-{numeros(r, com_link=False) if slug == "noroeste" else ""}
-
-<section class="secao{" secao--2" if slug != "noroeste" else ""}" id="empreendimentos">
+<section class="secao{" tema-claro" if slug == "noroeste" else ""}" id="empreendimentos">
   <div class="wrap">
     <div class="cabeca revelar">
       <div class="cabeca__texto"><span class="rotulo rotulo--linha">Curadoria Private</span><h2 class="titulo" style="margin-top:22px">Empreendimentos {"no" if slug == "noroeste" else "na"} <em>{e(reg['rotulo'])}</em>.</h2></div>
@@ -471,8 +475,8 @@ def pagina_regiao(slug):
   </div>
 </section>
 
-{institucional(r)}
-{contato(r, titulo=f'Receba a curadoria {"do" if slug == "noroeste" else "da"} <em>{e(reg["rotulo"])}</em>.', origem=f'Região {reg["nome"]}')}
+{institucional(r, claro=slug != "noroeste")}
+{contato(r, claro=slug == "noroeste", titulo=f'Receba a curadoria {"do" if slug == "noroeste" else "da"} <em>{e(reg["rotulo"])}</em>.', origem=f'Região {reg["nome"]}')}
 </main>
 """
     html += rodape(r)
@@ -548,7 +552,7 @@ def pagina_empreendimento(x, lp=False):
   </div>
 </section>
 
-<section class="secao" id="sobre">
+<section class="secao tema-claro" id="sobre">
   <div class="wrap ficha">
     <div class="revelar">
       <span class="rotulo rotulo--linha">Conheça o {e(x['nome'])}</span>
@@ -570,7 +574,7 @@ def pagina_empreendimento(x, lp=False):
   </div>
 </section>
 
-<section class="secao" id="localizacao">
+<section class="secao tema-claro" id="localizacao">
   <div class="wrap local">
     <div class="local__cartao moldura revelar">
       <span class="rotulo rotulo--linha">Localização</span>
@@ -585,7 +589,7 @@ def pagina_empreendimento(x, lp=False):
 </section>
 
 {outros_html}
-{institucional(r)}
+{institucional(r, claro=True)}
 {contato(r, titulo=f'Receba as informações do <em>{e(x["nome"])}</em>.', texto="Plantas, valores e disponibilidade atualizados. Um especialista Private entra em contato com você.", interesse=x['nome'], origem=("Landing page " if lp else "Página ") + x['nome'])}
 </main>
 {visor()}
@@ -634,7 +638,7 @@ def pagina_blog():
   <h1 class="titulo">Para escolher <em>onde morar</em> em Brasília.</h1>
   <p class="lead">Arquitetura, bairros e o mercado de alto padrão, pelo olhar da curadoria Private.</p>
 </div></section>
-<section class="secao secao--compacta"><div class="wrap">
+<section class="secao secao--compacta tema-claro"><div class="wrap">
   <div class="grade">
     <article class="card revelar">
       <div class="card__midia"><img src="{r}{img_site('quadra-500-b', True)}" alt="Vista aérea da Quadra 500 do Sudoeste" loading="lazy"></div>
@@ -663,7 +667,7 @@ def pagina_blog():
   <h1 class="titulo">Brasília: onde a arquitetura não apenas abriga, <em>ela emociona</em>.</h1>
   <p class="lead">{e(POST_RESUMO)}</p>
 </div></section>
-<section class="secao secao--compacta"><div class="wrap">
+<section class="secao secao--compacta tema-claro"><div class="wrap">
   {foto_faixas(r + img_site('quadra-500-b'), r + img_site('quadra-500-b', True), 'Vista aérea da Quadra 500 do Sudoeste', 'faixas--base', sizes='100vw').replace('class="faixas faixas--base"', 'class="faixas faixas--base" style="aspect-ratio:21/9;margin-bottom:clamp(48px,6vw,80px)"')}
   <article class="artigo">{corpo}</article>
 </div></section>
@@ -685,7 +689,7 @@ def pagina_privacidade():
   <h1 class="titulo">Privacidade e <em>cookies</em>.</h1>
   <p class="lead">Como tratamos os dados pessoais de quem visita este site e entra em contato conosco, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</p>
 </div></section>
-<section class="secao secao--compacta"><div class="wrap"><article class="artigo legal">{corpo}</article></div></section>
+<section class="secao secao--compacta tema-claro"><div class="wrap"><article class="artigo legal">{corpo}</article></div></section>
 </main>
 """
     html += rodape(r)
@@ -700,8 +704,8 @@ def redirecionar(antigo, novo_rel, novo_abs):
 <link rel="canonical" href="{novo_abs}">
 <meta http-equiv="refresh" content="0; url={novo_rel}">
 <script>location.replace("{novo_rel}" + location.search + location.hash);</script>
-</head><body style="background:#131415;color:#fff;font-family:sans-serif">
-<p>Esta página mudou de endereço: <a href="{novo_rel}" style="color:#fff">{novo_abs}</a></p>
+</head><body style="background:#131415;color:#FDFDFD;font-family:sans-serif">
+<p>Esta página mudou de endereço: <a href="{novo_rel}" style="color:#FDFDFD">{novo_abs}</a></p>
 </body></html>
 """
     destino = RAIZ / antigo / "index.html"
