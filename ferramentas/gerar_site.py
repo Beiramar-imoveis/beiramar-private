@@ -678,7 +678,7 @@ def pagina_empreendimento(x, lp=False):
   <div class="wrap">
     <span class="subnav__nome">{e(x['nome'])}</span>
     <div class="subnav__links">
-      <a href="#sobre">{t('Sobre', 'Overview')}</a><a href="#galeria">{t('Galeria', 'Gallery')}</a><a href="#localizacao">{t('Localização', 'Location')}</a><a href="#outros">{t('Outros empreendimentos', 'Other properties')}</a><a href="#ecossistema">Grupo Beiramar</a>
+      <a href="#sobre">{t('Sobre', 'Overview')}</a><a href="#galeria">{t('Galeria', 'Gallery')}</a><a href="#localizacao">{t('Localização', 'Location')}</a><a href="#outros">{t('Outros empreendimentos', 'Other properties')}</a>
     </div>
   </div>
 </nav>"""
