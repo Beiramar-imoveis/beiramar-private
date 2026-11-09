@@ -271,7 +271,6 @@ def numeros(r, com_link=True):
     link = (f'<a href="{r}noroeste/" class="btn btn-linha" style="margin-top:40px">Conhecer o Noroeste {seta()}</a>'
             if com_link else "")
     return f"""<section class="secao claro" id="numeros">
-  <div class="listras" aria-hidden="true"></div>
   <div class="wrap numeros">
     <div class="revelar">
       <span class="rotulo rotulo--linha">{e(n['titulo'])}</span>
@@ -332,7 +331,6 @@ def pagina_inicio():
     html += f"""<main>
 <section class="hero">
   {foto_faixas(img_site('home-hero'), img_site('home-hero', True), 'Piscina privativa de cobertura com vista para o verde', 'hero__midia', eager=True)}
-  <div class="listras" aria-hidden="true"></div>
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · Plano Piloto</span>
@@ -382,8 +380,6 @@ def pagina_inicio():
     <div class="regioes">{regioes}</div>
   </div>
 </section>
-
-{numeros(r)}
 
 <section class="secao" id="empreendimentos">
   <div class="wrap">
@@ -535,7 +531,6 @@ def pagina_empreendimento(x, lp=False):
     html += f"""<main>
 <section class="hero emp-hero">
   {foto_faixas(r + img_emp(x['slug']), r + img_emp(x['slug'], p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
-  <div class="listras" aria-hidden="true"></div>
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · {e(reg['nome'])}</span>
