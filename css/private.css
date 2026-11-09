@@ -256,8 +256,8 @@ em,.serif{
   .topo.aberto .nav .nav-idiomas a{display:inline;padding:0;border:0;font-size:20px;font-weight:500;color:#8A8C8F!important}
   .topo.aberto .nav .nav-idiomas a::after{display:none}
   .topo.aberto .nav .nav-idiomas a:hover{color:#131415!important}
-  .nav-idiomas__atual{color:#131415;font-weight:700}
-  .nav-idiomas__sep{color:#8A8C8F;font-size:16px}
+  .topo.aberto .nav-idiomas__atual{color:#131415;font-weight:700}
+  .topo.aberto .nav-idiomas__sep{color:#8A8C8F;font-size:16px}
   /* "Falar com um especialista" vira o botão de destaque no fim do painel */
   .topo.aberto .nav .nav-cta{
     margin-top:28px;padding:18px 22px;border:0;border-radius:2px;
@@ -690,4 +690,14 @@ main:has(.subnav) section[id]{scroll-margin-top:128px}
 @media(max-width:1060px) and (min-width:961px){
   .nav{gap:16px}
   .topo .wrap{gap:16px}
+}
+
+/* ---------- landing page: cabeçalho reduzido (idiomas + contato), visível também no celular ---------- */
+@media(max-width:960px){
+  .topo--lp .nav{display:flex;gap:16px}
+  .topo--lp .nav-idiomas{margin-right:0;font-size:12px}
+  .topo--lp .nav .nav-cta{padding:10px 12px;font-size:10px;letter-spacing:.12em}
+}
+@media(max-width:420px){
+  .topo--lp .nav .nav-cta{display:none}
 }

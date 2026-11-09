@@ -229,7 +229,8 @@ def topo(r, b, par, atual="", lp=False, eco_local=True):
     """Cabeçalho. r = caminho até a raiz (arquivos); b = raiz do idioma (links)."""
     cta = f'<a href="#contato" class="nav-cta">{t("Falar com um especialista", "Talk to a specialist")}</a>'
     if lp:
-        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{cta}</nav>'
+        _, lista = idioma_link(r, par)
+        nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{lista}{cta}</nav>'
     else:
         itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Quadra 500"),
                  ("empreendimentos", f"{b}#empreendimentos", t("Empreendimentos", "Properties")),
@@ -240,7 +241,8 @@ def topo(r, b, par, atual="", lp=False, eco_local=True):
         nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{links}{lista}{cta}</nav>'
     toggle = "" if lp else (f'<button class="nav-toggle" type="button" aria-controls="nav" aria-expanded="false" '
                             f'aria-label="{t("Abrir menu", "Open menu")}">{MENU_ICONE}</button>')
-    return f"""<header class="topo" id="topo">
+    classe_lp = " topo--lp" if lp else ""
+    return f"""<header class="topo{classe_lp}" id="topo">
   <div class="wrap">
     <a href="{b}" class="marca" aria-label="Beiramar Private — {t('início', 'home')}">{assinatura(r, classe='logo-branca')}{assinatura(r, preta=True, classe='logo-preta')}</a>
     {nav}
