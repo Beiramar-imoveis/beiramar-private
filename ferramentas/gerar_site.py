@@ -44,6 +44,12 @@ EMPS_PT = [x for x in DADOS["empreendimentos"] if x.get("ativo", True)]
 REG_PT = {r["slug"]: r for r in DADOS["regioes"]}
 
 LANG = "pt"          # idioma da página em geração
+
+
+def versao(rel):
+    """Código curto do conteúdo do arquivo, para o navegador baixar a versão nova a cada mudança."""
+    import hashlib
+    return hashlib.md5((RAIZ / rel).read_bytes()).hexdigest()[:8]
 geradas = []         # caminhos para o sitemap
 
 
@@ -194,8 +200,8 @@ def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jp
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <link rel="preload" href="{r}fontes/didot-italic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{r}css/consentimento.css">
-<link rel="stylesheet" href="{r}css/private.css">
+<link rel="stylesheet" href="{r}css/consentimento.css?v={versao("css/consentimento.css")}">
+<link rel="stylesheet" href="{r}css/private.css?v={versao("css/private.css")}">
 {extra}
 </head>
 <body>
@@ -280,8 +286,8 @@ def rodape(r, b):
   </div>
 </footer>
 <a class="whats" href="{wa()}" target="_blank" rel="noopener" aria-label="{t('Falar pelo WhatsApp', 'Chat on WhatsApp')}">{ICONES['whats']}</a>
-<script src="{r}js/private.js" defer></script>
-<script src="{r}js/consentimento.js" defer></script>
+<script src="{r}js/private.js?v={versao("js/private.js")}" defer></script>
+<script src="{r}js/consentimento.js?v={versao("js/consentimento.js")}" defer></script>
 </body>
 </html>
 """
@@ -672,7 +678,6 @@ def pagina_empreendimento(x, lp=False):
     <div class="subnav__links">
       <a href="#sobre">{t('Sobre', 'Overview')}</a><a href="#galeria">{t('Galeria', 'Gallery')}</a><a href="#localizacao">{t('Localização', 'Location')}</a><a href="#outros">{t('Outros empreendimentos', 'Other properties')}</a><a href="#ecossistema">Grupo Beiramar</a>
     </div>
-    <a href="#contato" class="subnav__cta">{t('Receber informações', 'Request information')}</a>
   </div>
 </nav>"""
     outros_html = "" if lp else f"""<section class="secao" id="outros">
