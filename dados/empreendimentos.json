@@ -179,6 +179,33 @@
       "antigos": ["amaze", "amaze-beiramar-private"]
     },
     {
+      "slug": "biome",
+      "ativo": true,
+      "nome": "Biome Studios",
+      "regiao": "noroeste",
+      "incorporadora": "",
+      "status": "",
+      "chamada": "Para viver a natureza e morar com <em class=\"sem-quebra\">bem-estar</em>.",
+      "metragem": "28 a 48 m²",
+      "dormitorios": "Studios, 1 e 2 quartos",
+      "descricao": [
+        "O Biome Studios é o primeiro empreendimento de luxo sustentável do Alto Noroeste, em frente ao Parque Burle Marx. Assinado pela Villela & Carvalho, pioneira em studios de alto padrão no bairro, reúne 104 studios e apartamentos de 1 e 2 quartos em duas torres, com arquitetura da Crosara, interiores da Bizzi Arquitetura e paisagismo de Fábio Camargo.",
+        "O condomínio foi pensado para a eficiência: usina solar fotovoltaica na cobertura, dimensionada para o consumo das áreas comuns, tratamento de águas cinzas para irrigação e recepção única com controle de acesso facial. O lazer inclui academia equipada pela Matrix, espaço gourmet com utensílios Le Creuset, lavanderia, bicicletário e delivery room. No térreo, uma galeria de lojas boutique completa o conceito."
+      ],
+      "assinaturas": [["Construção", "Villela & Carvalho"], ["Arquitetura", "Crosara Arquitetura"], ["Interiores", "Bizzi Arquitetura"], ["Paisagismo", "Fábio Camargo"]],
+      "unidades": [
+        {"titulo": "Studios e 1 quarto", "itens": ["28,40 a 39,16 m²", "Unidades com terraço privativo"]},
+        {"titulo": "2 quartos", "itens": ["48,50 a 48,54 m²"]},
+        {"titulo": "Lojas boutique", "itens": ["22,93 a 41,41 m²", "Pé-direito acima de 5 m", "Banheiro privativo"]}
+      ],
+      "nota": "Usina solar de 54 kWp para as áreas comuns, reaproveitamento de águas cinzas e vagas com infraestrutura para carro elétrico.",
+      "endereco": "CLNW 04/05, Lotes A e B · Noroeste",
+      "mapa": "https://www.google.com/maps?q=CLNW%2004%2F05%20Noroeste%20Bras%C3%ADlia",
+      "galeria": 10,
+      "fonte": "Book Biome Studios (Villela & Carvalho)",
+      "antigos": []
+    },
+    {
       "slug": "icon",
       "ativo": true,
       "nome": "Icon",

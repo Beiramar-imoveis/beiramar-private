@@ -752,6 +752,7 @@ def pagina_empreendimento(x, lp=False):
     <div class="cabeca revelar"><div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Galeria', 'Gallery')}</span><h2 class="titulo" style="margin-top:22px">{t('Para <em>imaginar</em> a vida aqui.', 'To <em>imagine</em> life here.')}</h2></div></div>
     {video}
     <div class="{classe_gal} revelar">{fotos}</div>
+    <p class="galeria__aviso">{t('Imagens meramente ilustrativas.', 'Images for illustration purposes only.')}</p>
   </div>
 </section>
 
