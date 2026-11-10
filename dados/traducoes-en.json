@@ -3,7 +3,8 @@
   "status": {
     "Pronto para morar": "Ready to move in",
     "Obras avançadas": "Advanced construction",
-    "Obras em andamento": "Under construction"
+    "Obras em andamento": "Under construction",
+    "Pré-lançamento": "Pre-launch"
   },
   "rotulos_assinatura": {
     "Arquitetura": "Architecture",
@@ -11,7 +12,8 @@
     "Paisagismo": "Landscaping",
     "Decoração": "Interior design",
     "Decoração das áreas comuns": "Common areas design",
-    "Arquitetura e decoração": "Architecture and interiors"
+    "Arquitetura e decoração": "Architecture and interiors",
+    "Coleção": "Collection"
   },
   "regioes": {
     "noroeste": {
@@ -130,6 +132,23 @@
         {"titulo": "Retail units", "itens": ["59 to 132 m²"]}
       ],
       "nota": "Contemporary living in Noroeste, with strong appreciation potential."
+    },
+    "icon": {
+      "chamada": "Where greenery stops being scenery and becomes <em>architecture</em>.",
+      "metragem": "190 to 637 m²",
+      "dormitorios": "4 suites",
+      "descricao": [
+        "Icon is the first development in the Base Genius Loci collection, the highest category of projects by Base Incorporações. It is built on one idea: architecture should start from the spirit of the place. In Brasília, that means celebrating the sky, the greenery and the open space. The façade is biophilic, with vegetation integrated into the building, and the pilotis free up the ground floor.",
+        "Just 40 four-suite apartments across 6 floors plus a rooftop level, open to natural light and to the unobstructed views only Brasília offers. Generous floor plans, finishes above market standard and a gym fully equipped by Technogym, minutes away from the seat of government and connected to the Monumental Axis."
+      ],
+      "unidades": [
+        {"titulo": "Middle apartments", "itens": ["4 suites", "190 to 191 m²"]},
+        {"titulo": "Corner apartments", "itens": ["4 suites", "197 to 200 m²"]},
+        {"titulo": "Duplex", "itens": ["4 suites", "329 to 331 m²"]},
+        {"titulo": "Penthouses", "itens": ["492 m²"]},
+        {"titulo": "Select penthouses", "itens": ["622 to 637 m²"]}
+      ],
+      "nota": "Only 40 units, with a biophilic façade and a gym equipped by Technogym."
     },
     "parque-alvorada": {
       "chamada": "Privacy, greenery and <em>penthouses</em> with private pools.",

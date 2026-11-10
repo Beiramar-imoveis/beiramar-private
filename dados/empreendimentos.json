@@ -179,6 +179,36 @@
       "antigos": ["amaze", "amaze-beiramar-private"]
     },
     {
+      "slug": "icon",
+      "ativo": true,
+      "nome": "Icon",
+      "regiao": "quadra-500",
+      "incorporadora": "Base Incorporações",
+      "status": "Pré-lançamento",
+      "chamada": "Onde o verde deixa de ser paisagem e passa a ser <em>arquitetura</em>.",
+      "metragem": "190 a 637 m²",
+      "dormitorios": "4 suítes",
+      "descricao": [
+        "O Icon é o primeiro empreendimento da coleção Base Genius Loci, a mais alta categoria de projetos da Base Incorporações. Nasce de uma premissa: a arquitetura deve partir do espírito do lugar. Em Brasília, isso significa valorizar o céu, o verde e a amplitude. A fachada é biofílica, com vegetação integrada à edificação, e os pilotis libertam o chão.",
+        "São 40 apartamentos de 4 suítes, distribuídos em 6 pavimentos mais cobertura, abertos para a luz natural e para as vistas livres que só Brasília oferece. Plantas generosas, acabamentos acima do padrão de mercado e academia equipada integralmente pela Technogym, a poucos minutos do centro do poder e conectado ao Eixo Monumental."
+      ],
+      "assinaturas": [["Coleção", "Base Genius Loci"]],
+      "unidades": [
+        {"titulo": "Apartamentos de meio", "itens": ["4 suítes", "190 a 191 m²"]},
+        {"titulo": "Apartamentos de canto", "itens": ["4 suítes", "197 a 200 m²"]},
+        {"titulo": "Duplex", "itens": ["4 suítes", "329 a 331 m²"]},
+        {"titulo": "Penthouses", "itens": ["492 m²"]},
+        {"titulo": "Penthouses Select", "itens": ["622 a 637 m²"]}
+      ],
+      "nota": "Apenas 40 unidades, com fachada biofílica e academia equipada pela Technogym.",
+      "endereco": "SQSW 500, Bloco U · Sudoeste",
+      "mapa": "https://www.google.com/maps?q=SQSW%20500%20Bloco%20U%20Sudoeste%20Bras%C3%ADlia",
+      "galeria": 10,
+      "video": "SWE6rjbxnD4",
+      "fonte": "https://baseincorporacoes.com.br/empreendimento/icon/",
+      "antigos": []
+    },
+    {
       "slug": "parque-alvorada",
       "ativo": true,
       "nome": "Parque Alvorada",
