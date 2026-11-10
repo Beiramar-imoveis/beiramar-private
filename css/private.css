@@ -540,6 +540,18 @@ main:has(.subnav) section[id]{scroll-margin-top:128px}
 }
 .mais-fotos{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(19,20,21,.6);font-size:12px;letter-spacing:.26em;text-transform:uppercase}
 
+/* vídeo do empreendimento: capa com play; o YouTube só carrega no clique */
+.video{position:relative;aspect-ratio:16/9;margin-bottom:clamp(8px,1vw,14px);background:#0D0E0F;overflow:hidden}
+.video__capa{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background:none;color:#FDFDFD}
+.video__capa img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.video__capa::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(19,20,21,.75) 0%,rgba(19,20,21,.25) 55%,rgba(19,20,21,.35) 100%)}
+.video__capa:hover img{transform:scale(1.03)}
+.video__play{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:clamp(68px,8vw,96px);height:clamp(68px,8vw,96px);border-radius:50%;border:1.5px solid #FDFDFD;display:flex;align-items:center;justify-content:center;transition:background-color .35s,color .35s}
+.video__play svg{width:34%;height:34%;fill:currentColor;margin-left:6%}
+.video__capa:hover .video__play{background:#FDFDFD;color:#131415}
+.video__rotulo{position:absolute;z-index:1;left:clamp(20px,3vw,40px);bottom:clamp(18px,2.6vw,34px);font-size:12px;font-weight:500;letter-spacing:.3em;text-transform:uppercase}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
 /* visualizador de fotos */
 .visor{position:fixed;inset:0;z-index:400;display:none;background:rgba(10,10,11,.96)}
 .visor.aberto{display:flex;align-items:center;justify-content:center}

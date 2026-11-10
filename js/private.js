@@ -165,6 +165,18 @@
     });
   }
 
+  /* ---------- vídeo: troca a capa pelo player do YouTube só quando o visitante clica ---------- */
+  document.querySelectorAll('.video__capa').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(btn.getAttribute('data-video')) + '?autoplay=1&rel=0&modestbranding=1';
+      f.title = btn.getAttribute('data-titulo') || 'Vídeo';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      btn.parentNode.replaceChild(f, btn);
+    });
+  });
+
   /* ---------- formulário de contato ---------- */
   // Máscara de telefone brasileiro, só nos campos marcados (a versão em inglês aceita números internacionais)
   document.querySelectorAll('input[data-mascara="br"]').forEach(function (inp) {

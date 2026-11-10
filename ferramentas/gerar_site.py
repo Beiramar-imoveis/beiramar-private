@@ -663,6 +663,13 @@ def pagina_empreendimento(x, lp=False):
         fotos += (f'<button type="button" data-foto="{r}{img_emp(x["slug"], nome)}" aria-label="{t("Ampliar foto", "Enlarge photo")} {i} {t("de", "of")} {n}">'
                   f'<img src="{r}{img_emp(x["slug"], nome, p=True)}" alt="{e(x["nome"])}, {t("foto", "photo")} {i}" loading="lazy" decoding="async"></button>')
     classe_gal = "galeria galeria--curta" if n <= 3 else "galeria"
+    video = ""
+    if x.get("video"):
+        video = (f'<div class="video revelar"><button type="button" class="video__capa" data-video="{e(x["video"])}" '
+                 f'data-titulo="{e(x["nome"])}" aria-label="{t("Assistir ao vídeo do", "Watch the video of")} {e(x["nome"])}">'
+                 f'<img src="{r}{img_emp(x["slug"])}" alt="" loading="lazy" decoding="async">'
+                 f'<span class="video__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>'
+                 f'<span class="video__rotulo">{t("Assistir ao vídeo", "Watch the video")}</span></button></div>')
 
     dados_hero = (f'<div><dt>{t("Metragem", "Size")}</dt><dd>{e(x["metragem"])}</dd></div>'
                   f'<div><dt>{t("Dormitórios", "Bedrooms")}</dt><dd>{e(x["dormitorios"])}</dd></div>')
@@ -743,6 +750,7 @@ def pagina_empreendimento(x, lp=False):
 <section class="secao secao--compacta secao--2" id="galeria">
   <div class="wrap">
     <div class="cabeca revelar"><div class="cabeca__texto"><span class="rotulo rotulo--linha">{t('Galeria', 'Gallery')}</span><h2 class="titulo" style="margin-top:22px">{t('Para <em>imaginar</em> a vida aqui.', 'To <em>imagine</em> life here.')}</h2></div></div>
+    {video}
     <div class="{classe_gal} revelar">{fotos}</div>
   </div>
 </section>
