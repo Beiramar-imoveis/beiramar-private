@@ -13,7 +13,8 @@
     "Decoração": "Interior design",
     "Decoração das áreas comuns": "Common areas design",
     "Arquitetura e decoração": "Architecture and interiors",
-    "Coleção": "Collection"
+    "Coleção": "Collection",
+    "Construção": "Builder"
   },
   "regioes": {
     "noroeste": {
@@ -132,6 +133,21 @@
         {"titulo": "Retail units", "itens": ["59 to 132 m²"]}
       ],
       "nota": "Contemporary living in Noroeste, with strong appreciation potential."
+    },
+    "biome": {
+      "chamada": "Live close to nature, at home in <em>well-being</em>.",
+      "metragem": "28 to 48 m²",
+      "dormitorios": "Studios, 1 and 2 bedrooms",
+      "descricao": [
+        "Biome Studios is the first sustainable luxury development in Upper Noroeste, facing Burle Marx Park. Built by Villela & Carvalho, a pioneer of high-end studios in the neighborhood, it brings together 104 studios and 1- and 2-bedroom apartments in two towers, with architecture by Crosara, interiors by Bizzi Arquitetura and landscaping by Fábio Camargo.",
+        "The condominium is designed for efficiency: a rooftop solar plant sized for the common areas’ consumption, greywater treatment for irrigation and a single reception with facial access control. Amenities include a gym equipped by Matrix, a gourmet space with Le Creuset cookware, laundry, bike storage and a delivery room. On the ground floor, a gallery of boutique shops completes the concept."
+      ],
+      "unidades": [
+        {"titulo": "Studios and 1 bedroom", "itens": ["28.40 to 39.16 m²", "Units with private terrace"]},
+        {"titulo": "2 bedrooms", "itens": ["48.50 to 48.54 m²"]},
+        {"titulo": "Boutique shops", "itens": ["22.93 to 41.41 m²", "Ceiling height over 5 m", "Private restroom"]}
+      ],
+      "nota": "54 kWp solar plant for the common areas, greywater reuse and parking with electric-car charging infrastructure."
     },
     "icon": {
       "chamada": "Where greenery stops being scenery and becomes <em>architecture</em>.",

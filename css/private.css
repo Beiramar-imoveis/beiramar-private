@@ -552,6 +552,8 @@ main:has(.subnav) section[id]{scroll-margin-top:128px}
 .video__rotulo{position:absolute;z-index:1;left:clamp(20px,3vw,40px);bottom:clamp(18px,2.6vw,34px);font-size:12px;font-weight:500;letter-spacing:.3em;text-transform:uppercase}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
+.galeria__aviso{margin-top:16px;font-size:12px;color:var(--cinza)}
+
 /* visualizador de fotos */
 .visor{position:fixed;inset:0;z-index:400;display:none;background:rgba(10,10,11,.96)}
 .visor.aberto{display:flex;align-items:center;justify-content:center}
