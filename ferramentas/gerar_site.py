@@ -251,7 +251,7 @@ def topo(r, b, par, atual="", lp=False, eco_local=True):
         _, lista = idioma_link(r, par)
         nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{lista}{cta}</nav>'
     else:
-        itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Quadra 500"),
+        itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Sudoeste"),
                  ("empreendimentos", f"{b}#empreendimentos", t("Empreendimentos", "Properties")),
                  ("private", f"{b}#sobre", t("A Private", "About")),
                  ("grupo", "#ecossistema" if eco_local else f"{b}#ecossistema", "Grupo Beiramar")]
@@ -284,7 +284,7 @@ def rodape(r, b):
         <p class="rodape__frase">{t('A frente de alto padrão da <em>Beiramar</em> no Plano Piloto.', 'The luxury division of <em>Beiramar</em> in Brasília’s Plano Piloto.')}</p>
       </div>
       <div><h4>Noroeste</h4><ul>{noroeste}</ul></div>
-      <div><h4>Quadra 500</h4><ul>{q500}</ul></div>
+      <div><h4>Sudoeste</h4><ul>{q500}</ul></div>
       <div>
         <h4>{t('Contato', 'Contact')}</h4>
         <ul>
@@ -338,7 +338,7 @@ def card(r, b, x, revelar=True, home=False):
 def opcoes_interesse(selecionado=""):
     out = ['<option value="" disabled' + ("" if selecionado else " selected") + f'>{t("Selecione", "Select")}</option>']
     for slug, reg in regioes().items():
-        out.append(f'<optgroup label="{e(reg["nome"])}">')
+        out.append(f'<optgroup label="{e(nome_home(slug))}">')
         for x in EMPS_PT:
             if x["regiao"] == slug:
                 sel = " selected" if x["nome"] == selecionado else ""
