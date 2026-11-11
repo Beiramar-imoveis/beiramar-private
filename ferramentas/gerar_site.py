@@ -314,14 +314,19 @@ def rodape(r, b):
 """
 
 
-def card(r, b, x, revelar=True):
+def nome_home(slug):
+    """Na home, a Quadra 500 aparece só como Sudoeste; o nome Quadra 500 fica para a página da região."""
+    return "Sudoeste" if slug == "quadra-500" else regioes()[slug]["nome"]
+
+
+def card(r, b, x, revelar=True, home=False):
     reg = regioes()[x["regiao"]]
     selo = f'<span class="selo">{e(x["status"])}</span>' if x.get("status") else ""
     rev = " revelar" if revelar else ""
     return f"""<article class="card{rev}" data-regiao="{x['regiao']}">
-  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], x.get('foto_card', 'capa'), p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
+  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], x.get('foto_card', 'capa'), p=True)}" alt="{e(x['nome'])}, {e(nome_home(x['regiao']) if home else reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
   <div class="card__corpo">
-    <span class="card__regiao">{e(reg['nome'])}</span>
+    <span class="card__regiao">{e(nome_home(x['regiao']) if home else reg['nome'])}</span>
     <h3 class="card__nome"><a class="card__link" href="{b}empreendimentos/{x['slug']}/">{e(x['nome'])}</a></h3>
     <p class="card__chamada">{x['chamada']}</p>
     <div class="card__dados"><div><span>{t('Metragem', 'Size')}</span>{e(x['metragem'])}</div><div><span>{t('Dormitórios', 'Bedrooms')}</span>{e(x['dormitorios'])}</div></div>
@@ -476,14 +481,14 @@ def pagina_inicio():
     b = r + prefixo()
     par = ("", "en/")
     lista = emps()
-    cards = "".join(card(r, b, x) for x in lista)
+    cards = "".join(card(r, b, x, home=True) for x in lista)
     regs = ""
     for slug, reg in regioes().items():
         qtd = sum(1 for x in lista if x["regiao"] == slug)
         regs += f"""<a class="regiao revelar" href="{b}{slug}/">
-  {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), reg['nome'], sizes='(max-width: 820px) 100vw, 50vw')}
+  {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), nome_home(slug), sizes='(max-width: 820px) 100vw, 50vw')}
   <span class="rotulo">Plano Piloto · Brasília</span>
-  <h3>{e(reg['nome'])}</h3>
+  <h3>{e(nome_home(slug))}</h3>
   <p>{e(reg['subtitulo'])}</p>
   <span class="regiao__rodape"><span>{qtd} {t('empreendimentos', 'properties')}</span>{seta()}</span>
 </a>"""
@@ -495,8 +500,8 @@ def pagina_inicio():
                                "parentOrganization": {"@type": "Organization", "name": "Grupo Beiramar", "url": GRUPO}},
         "sameAs": [INSTAGRAM, LINKEDIN, FACEBOOK]}, ensure_ascii=False)
     html = head(r, t("Beiramar Private | Imóveis de alto padrão no Plano Piloto", "Beiramar Private | Luxury real estate in Brasília’s Plano Piloto"),
-                t("Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
-                  "Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in Brasília’s Plano Piloto. Advisory, discreet and personal service by Beiramar."),
+                t("Curadoria de imóveis de alto padrão no Noroeste e no Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
+                  "Curated luxury homes in Noroeste and Sudoeste, in Brasília’s Plano Piloto. Advisory, discreet and personal service by Beiramar."),
                 caminho, par=par, extra=f'<script type="application/ld+json">{jsonld}</script>')
     html += topo(r, b, par)
     html += f"""<main>
@@ -506,7 +511,7 @@ def pagina_inicio():
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · {t('Plano Piloto', 'Brasília, Brazil')}</span>
       <h1 class="display">{t('Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.', 'Living well is a decision. We take care of the <em>address</em>.')}</h1>
-      <p class="lead">{t('Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, com atendimento consultivo, discreto e personalizado.', 'Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in the heart of Brasília’s Plano Piloto, with advisory, discreet and personal service.')}</p>
+      <p class="lead">{t('Curadoria de imóveis de alto padrão no Noroeste e no Sudoeste, com atendimento consultivo, discreto e personalizado.', 'Curated luxury homes in Noroeste and Sudoeste, in the heart of Brasília’s Plano Piloto, with advisory, discreet and personal service.')}</p>
       <div class="hero__acoes">
         <a href="#empreendimentos" class="btn btn-claro">{t('Ver empreendimentos', 'View properties')} {seta()}</a>
         <a href="#contato" class="btn btn-linha">{t('Falar com um especialista', 'Talk to a specialist')}</a>
@@ -524,7 +529,7 @@ def pagina_inicio():
 
 <section class="secao tema-claro" id="sobre">
   <div class="wrap sobre">
-    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada do Icon, com jardins suspensos, na Quadra 500 do Sudoeste', 'Icon façade with hanging gardens, in Quadra 500 Sudoeste')}" loading="lazy" decoding="async"></figure>
+    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada do Icon, com jardins suspensos, no Sudoeste', 'Icon façade with hanging gardens, in Sudoeste')}" loading="lazy" decoding="async"></figure>
     <div class="revelar">
       <span class="rotulo rotulo--linha">{t('A Private', 'About Private')}</span>
       <h2 class="titulo">{t('A frente de alto padrão da <em>Beiramar</em>.', 'The luxury division of <em>Beiramar</em>.')}</h2>
@@ -558,7 +563,7 @@ def pagina_inicio():
       <div class="filtros" data-filtros="grade-emp" role="group" aria-label="{t('Filtrar por região', 'Filter by neighborhood')}">
         <button class="filtro" type="button" data-filtro="todos" aria-pressed="true">{t('Todos', 'All')}</button>
         <button class="filtro" type="button" data-filtro="noroeste" aria-pressed="false">Noroeste</button>
-        <button class="filtro" type="button" data-filtro="quadra-500" aria-pressed="false">Quadra 500</button>
+        <button class="filtro" type="button" data-filtro="quadra-500" aria-pressed="false">Sudoeste</button>
       </div>
     </div>
     <div class="grade" id="grade-emp">{cards}</div>
