@@ -28,9 +28,9 @@ DADOS = json.loads((RAIZ / "dados" / "empreendimentos.json").read_text(encoding=
 TRAD = json.loads((RAIZ / "dados" / "traducoes-en.json").read_text(encoding="utf-8"))
 
 DOMINIO = "https://beiramarprivate.com.br"
-WHATS_NUM = "556131426671"
-WHATS_TXT = "(61) 3142-6671"
-WHATS_TXT_INTL = "+55 61 3142-6671"
+WHATS_NUM = "556132621200"
+WHATS_TXT = "(61) 3262-1200"
+WHATS_TXT_INTL = "+55 61 3262-1200"
 INSTAGRAM = "https://www.instagram.com/beiramarprivate/"
 LINKEDIN = "https://www.linkedin.com/company/beiramarimoveis/"
 FACEBOOK = "https://www.facebook.com/BeiramarImoveis"
@@ -300,7 +300,7 @@ def card(r, b, x, revelar=True):
     selo = f'<span class="selo">{e(x["status"])}</span>' if x.get("status") else ""
     rev = " revelar" if revelar else ""
     return f"""<article class="card{rev}" data-regiao="{x['regiao']}">
-  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
+  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], x.get('foto_card', 'capa'), p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
   <div class="card__corpo">
     <span class="card__regiao">{e(reg['nome'])}</span>
     <h3 class="card__nome"><a class="card__link" href="{b}empreendimentos/{x['slug']}/">{e(x['nome'])}</a></h3>
@@ -463,7 +463,7 @@ def pagina_inicio():
     jsonld = json.dumps({
         "@context": "https://schema.org", "@type": "RealEstateAgent", "name": "Beiramar Private",
         "url": DOMINIO + "/" + caminho, "logo": DOMINIO + "/apple-touch-icon.png", "image": DOMINIO + "/compartilhamento.jpg",
-        "telephone": "+55 61 3142-6671", "areaServed": "Brasília, DF, Brazil",
+        "telephone": "+55 61 3262-1200", "areaServed": "Brasília, DF, Brazil",
         "parentOrganization": {"@type": "Organization", "name": "Beiramar Imóveis", "url": BEIRAMAR_IMOVEIS,
                                "parentOrganization": {"@type": "Organization", "name": "Grupo Beiramar", "url": GRUPO}},
         "sameAs": [INSTAGRAM, LINKEDIN, FACEBOOK]}, ensure_ascii=False)
@@ -488,8 +488,7 @@ def pagina_inicio():
     <div class="hero__rodape">
       <dl class="hero__dados">
         <div><dt>{t('Empreendimentos', 'Properties')}</dt><dd>{len(lista)} {t('selecionados', 'selected')}</dd></div>
-        <div><dt>{t('Regiões', 'Neighborhoods')}</dt><dd>{t('Noroeste e Quadra 500', 'Noroeste and Quadra 500')}</dd></div>
-        <div><dt>{t('Atendimento', 'Service')}</dt><dd>{t('Consultivo e exclusivo', 'Advisory and exclusive')}</dd></div>
+        <div><dt>{t('Regiões', 'Neighborhoods')}</dt><dd>{t('Noroeste e Sudoeste', 'Noroeste and Sudoeste')}</dd></div>
       </dl>
       <a href="#sobre" class="rolar"><span></span>{t('Role', 'Scroll')}</a>
     </div>
@@ -498,7 +497,7 @@ def pagina_inicio():
 
 <section class="secao tema-claro" id="sobre">
   <div class="wrap sobre">
-    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada noturna de empreendimento de alto padrão no Noroeste', 'Night view of a luxury building in Noroeste')}" loading="lazy" decoding="async"></figure>
+    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada do Icon, com jardins suspensos, na Quadra 500 do Sudoeste', 'Icon façade with hanging gardens, in Quadra 500 Sudoeste')}" loading="lazy" decoding="async"></figure>
     <div class="revelar">
       <span class="rotulo rotulo--linha">{t('A Private', 'About Private')}</span>
       <h2 class="titulo">{t('A frente de alto padrão da <em>Beiramar</em>.', 'The luxury division of <em>Beiramar</em>.')}</h2>
@@ -709,12 +708,12 @@ def pagina_empreendimento(x, lp=False):
         tit_cont = f"Receba as informações do <em>{e(x['nome'])}</em>."
         conhecer_reg = f"Conhecer {'o' if x['regiao'] == 'noroeste' else 'a'} {reg['rotulo']}"
     titulo_pagina = f"{x['nome']} | {reg['rotulo']} | Beiramar Private"
-    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"]),
+    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"], x.get("foto_hero", "capa")),
                 canonical=f"{DOMINIO}/empreendimentos/{x['slug']}/" if lp else None)
     html += topo(r, b, par, "", lp=lp)
     html += f"""<main>
 <section class="hero emp-hero">
-  {foto_faixas(r + img_emp(x['slug']), r + img_emp(x['slug'], p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
+  {foto_faixas(r + img_emp(x['slug'], x.get('foto_hero', 'capa')), r + img_emp(x['slug'], x.get('foto_hero', 'capa'), p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · {e(reg['rotulo'])}</span>
