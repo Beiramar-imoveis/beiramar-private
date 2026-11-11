@@ -34,7 +34,10 @@ o que faltar lá aparece em português na versão em inglês. O blog e a landing
 
 ```bash
 python3 ferramentas/gerar_site.py
+node ferramentas/gerar_cards.js
 ```
+
+O segundo comando atualiza os **cards de compartilhamento** (`imagens/compartilhar/`), as imagens de 1200 × 630 que aparecem quando um link do site é colado no WhatsApp, LinkedIn ou Facebook. Cada página tem o seu card, em português e em inglês, com foto, logo, título e, nos empreendimentos, metragem, dormitórios e status. Requer o Playwright (`npm i -D playwright`).
 
 4. Faça o commit e o push. O GitHub Pages publica em seguida.
 

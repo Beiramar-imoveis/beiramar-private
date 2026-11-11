@@ -51,6 +51,17 @@ def versao(rel):
     import hashlib
     return hashlib.md5((RAIZ / rel).read_bytes()).hexdigest()[:8]
 geradas = []         # caminhos para o sitemap
+CARDS = {}           # cards de compartilhamento (og:image), gerados por ferramentas/gerar_cards.js
+
+
+def card_og(arquivo, rotulo, titulo, foto, sub="", meta=""):
+    """Registra o card de compartilhamento (1200 x 630) de uma página e devolve o caminho da imagem.
+    O ?v= muda quando o conteúdo do card muda, para o WhatsApp e as redes buscarem a versão nova."""
+    import hashlib
+    spec = {"arquivo": arquivo, "idioma": LANG, "rotulo": rotulo, "titulo": titulo, "sub": sub, "meta": meta, "foto": foto}
+    CARDS[arquivo] = spec
+    v = hashlib.md5((json.dumps(spec, sort_keys=True, ensure_ascii=False) + versao(foto)).encode()).hexdigest()[:8]
+    return f"imagens/compartilhar/{arquivo}.jpg?v={v}"
 
 
 # ---------------------------------------------------------------- idioma
@@ -163,10 +174,11 @@ def sem_em(txt):
 
 
 # ---------------------------------------------------------------- blocos comuns
-def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jpg", noindex=False, canonical=None, extra=""):
+def head(r, titulo, descricao, caminho, par=None, imagem_og=None, noindex=False, canonical=None, extra=""):
     """par = (caminho_pt, caminho_en) para os links de idioma (hreflang)."""
     url = f"{DOMINIO}/{caminho}"
     can = canonical or url
+    imagem_og = imagem_og or card_inicio()
     og_img = imagem_og if imagem_og.startswith("http") else f"{DOMINIO}/{imagem_og}"
     robots = '<meta name="robots" content="noindex, follow">' if noindex else ""
     alternos = ""
@@ -195,7 +207,14 @@ def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jp
 <meta property="og:description" content="{e(descricao)}">
 <meta property="og:url" content="{e(url)}">
 <meta property="og:image" content="{e(og_img)}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{e(titulo)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(titulo)}">
+<meta name="twitter:description" content="{e(descricao)}">
+<meta name="twitter:image" content="{e(og_img)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -443,6 +462,14 @@ def salvar(caminho, html, sitemap=True):
 
 
 # ---------------------------------------------------------------- páginas
+def card_inicio():
+    return card_og(t("inicio", "en-inicio"), "Beiramar Private · " + t("Plano Piloto", "Brasília, Brazil"),
+                   t("Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.",
+                     "Living well is a decision. We take care of the <em>address</em>."),
+                   img_site("home-hero"),
+                   sub=t("Imóveis de alto padrão no Noroeste e no Sudoeste.", "Luxury homes in Noroeste and Sudoeste."))
+
+
 def pagina_inicio():
     caminho = prefixo()
     r = raiz_rel(caminho)
@@ -583,7 +610,9 @@ def pagina_regiao(slug):
         tit_cont = f"Receba a curadoria {'do' if nor else 'da'} <em>{e(reg['rotulo'])}</em>."
     html = head(r, f"{reg['nome']} | Beiramar Private",
                 f"{reg['titulo']} {sem_em(reg['titulo_destaque'])} {reg['subtitulo']}", caminho, par=par,
-                imagem_og=img_site(reg["imagem"]))
+                imagem_og=card_og(prefixo().replace("/", "-") + slug, "Beiramar Private · Plano Piloto",
+                                  f"{e(reg['titulo'])} {reg['titulo_destaque']}", img_site(reg["imagem"]),
+                                  sub=reg["subtitulo"]))
     html += topo(r, b, par, slug)
     html += f"""<main>
 <section class="hero">
@@ -708,7 +737,10 @@ def pagina_empreendimento(x, lp=False):
         tit_cont = f"Receba as informações do <em>{e(x['nome'])}</em>."
         conhecer_reg = f"Conhecer {'o' if x['regiao'] == 'noroeste' else 'a'} {reg['rotulo']}"
     titulo_pagina = f"{x['nome']} | {reg['rotulo']} | Beiramar Private"
-    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"], x.get("foto_hero", "capa")),
+    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=card_og("lpamazesunside" if lp else prefixo().replace("/", "-") + x["slug"],
+                                  f"Beiramar Private · {reg['rotulo']}", e(x["nome"]),
+                                  img_emp(x["slug"], x.get("foto_hero", "capa")), sub=x["chamada"],
+                                  meta=" · ".join(v for v in (x["metragem"], x["dormitorios"], x.get("status", "")) if v)),
                 canonical=f"{DOMINIO}/empreendimentos/{x['slug']}/" if lp else None)
     html += topo(r, b, par, "", lp=lp)
     html += f"""<main>
@@ -821,7 +853,9 @@ def pagina_blog():
     r = raiz_rel(caminho)
     b = r
     par = ("blog/", None)
-    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", caminho)
+    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", caminho,
+                imagem_og=card_og("blog", "Beiramar Private · Blog", "Para escolher <em>onde morar</em> em Brasília.",
+                                  img_site("noroeste"), sub="Arquitetura, bairros e o mercado de alto padrão."))
     html += topo(r, b, par, "blog", eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -853,7 +887,9 @@ def pagina_blog():
     b = r
     par = (caminho, None)
     corpo = (RAIZ / "dados" / "blog" / f"{POST_SLUG}.html").read_text(encoding="utf-8")
-    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, caminho, imagem_og=img_site("quadra-500-b"))
+    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, caminho, imagem_og=card_og("blog-arquitetura-de-brasilia", "Beiramar Private · Blog",
+                                                                                  "Brasília: onde a arquitetura não apenas abriga, ela <em>emociona</em>.",
+                                                                                  img_site("quadra-500-b")))
     html += topo(r, b, par, "blog", eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -881,7 +917,10 @@ def pagina_privacidade():
     html = head(r, t("Privacidade e cookies | Beiramar Private", "Privacy and cookies | Beiramar Private"),
                 t("Como a Beiramar Private trata os dados pessoais de quem visita o site e entra em contato, conforme a LGPD.",
                   "How Beiramar Private handles the personal data of website visitors and contacts, under Brazil’s LGPD."),
-                caminho, par=par)
+                caminho, par=par,
+                imagem_og=card_og(t("privacidade", "en-privacidade"), "Beiramar Private",
+                                  t("Privacidade e <em>cookies</em>.", "Privacy and <em>cookies</em>."), img_site("sobre"),
+                                  sub=t("Como tratamos os seus dados, conforme a LGPD.", "How we handle your data, under Brazil’s LGPD.")))
     html += topo(r, b, par, eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -971,6 +1010,8 @@ def main():
     (RAIZ / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
     (RAIZ / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
     (RAIZ / ".nojekyll").write_text("")
+    (RAIZ / "dados" / "cards-compartilhamento.json").write_text(
+        json.dumps(list(CARDS.values()), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{len(geradas)} páginas geradas (pt + en), {len(redirs)} redirecionamentos.")
 
 
