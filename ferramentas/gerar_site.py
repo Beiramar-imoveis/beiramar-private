@@ -51,6 +51,17 @@ def versao(rel):
     import hashlib
     return hashlib.md5((RAIZ / rel).read_bytes()).hexdigest()[:8]
 geradas = []         # caminhos para o sitemap
+CARDS = {}           # cards de compartilhamento (og:image), gerados por ferramentas/gerar_cards.js
+
+
+def card_og(arquivo, rotulo, titulo, foto, sub="", meta=""):
+    """Registra o card de compartilhamento (1200 x 630) de uma página e devolve o caminho da imagem.
+    O ?v= muda quando o conteúdo do card muda, para o WhatsApp e as redes buscarem a versão nova."""
+    import hashlib
+    spec = {"arquivo": arquivo, "idioma": LANG, "rotulo": rotulo, "titulo": titulo, "sub": sub, "meta": meta, "foto": foto}
+    CARDS[arquivo] = spec
+    v = hashlib.md5((json.dumps(spec, sort_keys=True, ensure_ascii=False) + versao(foto)).encode()).hexdigest()[:8]
+    return f"imagens/compartilhar/{arquivo}.jpg?v={v}"
 
 
 # ---------------------------------------------------------------- idioma
@@ -163,10 +174,11 @@ def sem_em(txt):
 
 
 # ---------------------------------------------------------------- blocos comuns
-def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jpg", noindex=False, canonical=None, extra=""):
+def head(r, titulo, descricao, caminho, par=None, imagem_og=None, noindex=False, canonical=None, extra=""):
     """par = (caminho_pt, caminho_en) para os links de idioma (hreflang)."""
     url = f"{DOMINIO}/{caminho}"
     can = canonical or url
+    imagem_og = imagem_og or card_inicio()
     og_img = imagem_og if imagem_og.startswith("http") else f"{DOMINIO}/{imagem_og}"
     robots = '<meta name="robots" content="noindex, follow">' if noindex else ""
     alternos = ""
@@ -195,7 +207,14 @@ def head(r, titulo, descricao, caminho, par=None, imagem_og="compartilhamento.jp
 <meta property="og:description" content="{e(descricao)}">
 <meta property="og:url" content="{e(url)}">
 <meta property="og:image" content="{e(og_img)}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{e(titulo)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(titulo)}">
+<meta name="twitter:description" content="{e(descricao)}">
+<meta name="twitter:image" content="{e(og_img)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
@@ -232,7 +251,7 @@ def topo(r, b, par, atual="", lp=False, eco_local=True):
         _, lista = idioma_link(r, par)
         nav = f'<nav class="nav" id="nav" aria-label="{t("Principal", "Main")}">{lista}{cta}</nav>'
     else:
-        itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Quadra 500"),
+        itens = [("noroeste", f"{b}noroeste/", "Noroeste"), ("quadra-500", f"{b}quadra-500/", "Sudoeste"),
                  ("empreendimentos", f"{b}#empreendimentos", t("Empreendimentos", "Properties")),
                  ("private", f"{b}#sobre", t("A Private", "About")),
                  ("grupo", "#ecossistema" if eco_local else f"{b}#ecossistema", "Grupo Beiramar")]
@@ -265,7 +284,7 @@ def rodape(r, b):
         <p class="rodape__frase">{t('A frente de alto padrão da <em>Beiramar</em> no Plano Piloto.', 'The luxury division of <em>Beiramar</em> in Brasília’s Plano Piloto.')}</p>
       </div>
       <div><h4>Noroeste</h4><ul>{noroeste}</ul></div>
-      <div><h4>Quadra 500</h4><ul>{q500}</ul></div>
+      <div><h4>Sudoeste</h4><ul>{q500}</ul></div>
       <div>
         <h4>{t('Contato', 'Contact')}</h4>
         <ul>
@@ -295,14 +314,19 @@ def rodape(r, b):
 """
 
 
-def card(r, b, x, revelar=True):
+def nome_home(slug):
+    """Na home, a Quadra 500 aparece só como Sudoeste; o nome Quadra 500 fica para a página da região."""
+    return "Sudoeste" if slug == "quadra-500" else regioes()[slug]["nome"]
+
+
+def card(r, b, x, revelar=True, home=False):
     reg = regioes()[x["regiao"]]
     selo = f'<span class="selo">{e(x["status"])}</span>' if x.get("status") else ""
     rev = " revelar" if revelar else ""
     return f"""<article class="card{rev}" data-regiao="{x['regiao']}">
-  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], x.get('foto_card', 'capa'), p=True)}" alt="{e(x['nome'])}, {e(reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
+  <div class="card__midia">{selo}<img src="{r}{img_emp(x['slug'], x.get('foto_card', 'capa'), p=True)}" alt="{e(x['nome'])}, {e(nome_home(x['regiao']) if home else reg['rotulo'])}" loading="lazy" decoding="async" draggable="false"></div>
   <div class="card__corpo">
-    <span class="card__regiao">{e(reg['nome'])}</span>
+    <span class="card__regiao">{e(nome_home(x['regiao']) if home else reg['nome'])}</span>
     <h3 class="card__nome"><a class="card__link" href="{b}empreendimentos/{x['slug']}/">{e(x['nome'])}</a></h3>
     <p class="card__chamada">{x['chamada']}</p>
     <div class="card__dados"><div><span>{t('Metragem', 'Size')}</span>{e(x['metragem'])}</div><div><span>{t('Dormitórios', 'Bedrooms')}</span>{e(x['dormitorios'])}</div></div>
@@ -314,7 +338,7 @@ def card(r, b, x, revelar=True):
 def opcoes_interesse(selecionado=""):
     out = ['<option value="" disabled' + ("" if selecionado else " selected") + f'>{t("Selecione", "Select")}</option>']
     for slug, reg in regioes().items():
-        out.append(f'<optgroup label="{e(reg["nome"])}">')
+        out.append(f'<optgroup label="{e(nome_home(slug))}">')
         for x in EMPS_PT:
             if x["regiao"] == slug:
                 sel = " selected" if x["nome"] == selecionado else ""
@@ -443,20 +467,28 @@ def salvar(caminho, html, sitemap=True):
 
 
 # ---------------------------------------------------------------- páginas
+def card_inicio():
+    return card_og(t("inicio", "en-inicio"), "Beiramar Private · " + t("Plano Piloto", "Brasília, Brazil"),
+                   t("Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.",
+                     "Living well is a decision. We take care of the <em>address</em>."),
+                   img_site("home-hero"),
+                   sub=t("Imóveis de alto padrão no Noroeste e no Sudoeste.", "Luxury homes in Noroeste and Sudoeste."))
+
+
 def pagina_inicio():
     caminho = prefixo()
     r = raiz_rel(caminho)
     b = r + prefixo()
     par = ("", "en/")
     lista = emps()
-    cards = "".join(card(r, b, x) for x in lista)
+    cards = "".join(card(r, b, x, home=True) for x in lista)
     regs = ""
     for slug, reg in regioes().items():
         qtd = sum(1 for x in lista if x["regiao"] == slug)
         regs += f"""<a class="regiao revelar" href="{b}{slug}/">
-  {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), reg['nome'], sizes='(max-width: 820px) 100vw, 50vw')}
+  {foto_faixas(r + img_site(reg['imagem']), r + img_site(reg['imagem'], True), nome_home(slug), sizes='(max-width: 820px) 100vw, 50vw')}
   <span class="rotulo">Plano Piloto · Brasília</span>
-  <h3>{e(reg['nome'])}</h3>
+  <h3>{e(nome_home(slug))}</h3>
   <p>{e(reg['subtitulo'])}</p>
   <span class="regiao__rodape"><span>{qtd} {t('empreendimentos', 'properties')}</span>{seta()}</span>
 </a>"""
@@ -468,8 +500,8 @@ def pagina_inicio():
                                "parentOrganization": {"@type": "Organization", "name": "Grupo Beiramar", "url": GRUPO}},
         "sameAs": [INSTAGRAM, LINKEDIN, FACEBOOK]}, ensure_ascii=False)
     html = head(r, t("Beiramar Private | Imóveis de alto padrão no Plano Piloto", "Beiramar Private | Luxury real estate in Brasília’s Plano Piloto"),
-                t("Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
-                  "Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in Brasília’s Plano Piloto. Advisory, discreet and personal service by Beiramar."),
+                t("Curadoria de imóveis de alto padrão no Noroeste e no Sudoeste, em Brasília. Atendimento consultivo, discreto e personalizado da Beiramar.",
+                  "Curated luxury homes in Noroeste and Sudoeste, in Brasília’s Plano Piloto. Advisory, discreet and personal service by Beiramar."),
                 caminho, par=par, extra=f'<script type="application/ld+json">{jsonld}</script>')
     html += topo(r, b, par)
     html += f"""<main>
@@ -479,7 +511,7 @@ def pagina_inicio():
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · {t('Plano Piloto', 'Brasília, Brazil')}</span>
       <h1 class="display">{t('Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.', 'Living well is a decision. We take care of the <em>address</em>.')}</h1>
-      <p class="lead">{t('Curadoria de imóveis de alto padrão no Noroeste e na Quadra 500 do Sudoeste, com atendimento consultivo, discreto e personalizado.', 'Curated luxury homes in Noroeste and Quadra 500 Sudoeste, in the heart of Brasília’s Plano Piloto, with advisory, discreet and personal service.')}</p>
+      <p class="lead">{t('Curadoria de imóveis de alto padrão no Noroeste e no Sudoeste, com atendimento consultivo, discreto e personalizado.', 'Curated luxury homes in Noroeste and Sudoeste, in the heart of Brasília’s Plano Piloto, with advisory, discreet and personal service.')}</p>
       <div class="hero__acoes">
         <a href="#empreendimentos" class="btn btn-claro">{t('Ver empreendimentos', 'View properties')} {seta()}</a>
         <a href="#contato" class="btn btn-linha">{t('Falar com um especialista', 'Talk to a specialist')}</a>
@@ -497,7 +529,7 @@ def pagina_inicio():
 
 <section class="secao tema-claro" id="sobre">
   <div class="wrap sobre">
-    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada do Icon, com jardins suspensos, na Quadra 500 do Sudoeste', 'Icon façade with hanging gardens, in Quadra 500 Sudoeste')}" loading="lazy" decoding="async"></figure>
+    <figure class="sobre__foto moldura revelar"><img src="{r}{img_site('sobre')}" srcset="{r}{img_site('sobre', True)} 760w, {r}{img_site('sobre')} 1600w" sizes="(max-width: 900px) 100vw, 50vw" alt="{t('Fachada do Icon, com jardins suspensos, no Sudoeste', 'Icon façade with hanging gardens, in Sudoeste')}" loading="lazy" decoding="async"></figure>
     <div class="revelar">
       <span class="rotulo rotulo--linha">{t('A Private', 'About Private')}</span>
       <h2 class="titulo">{t('A frente de alto padrão da <em>Beiramar</em>.', 'The luxury division of <em>Beiramar</em>.')}</h2>
@@ -531,7 +563,7 @@ def pagina_inicio():
       <div class="filtros" data-filtros="grade-emp" role="group" aria-label="{t('Filtrar por região', 'Filter by neighborhood')}">
         <button class="filtro" type="button" data-filtro="todos" aria-pressed="true">{t('Todos', 'All')}</button>
         <button class="filtro" type="button" data-filtro="noroeste" aria-pressed="false">Noroeste</button>
-        <button class="filtro" type="button" data-filtro="quadra-500" aria-pressed="false">Quadra 500</button>
+        <button class="filtro" type="button" data-filtro="quadra-500" aria-pressed="false">Sudoeste</button>
       </div>
     </div>
     <div class="grade" id="grade-emp">{cards}</div>
@@ -583,7 +615,9 @@ def pagina_regiao(slug):
         tit_cont = f"Receba a curadoria {'do' if nor else 'da'} <em>{e(reg['rotulo'])}</em>."
     html = head(r, f"{reg['nome']} | Beiramar Private",
                 f"{reg['titulo']} {sem_em(reg['titulo_destaque'])} {reg['subtitulo']}", caminho, par=par,
-                imagem_og=img_site(reg["imagem"]))
+                imagem_og=card_og(prefixo().replace("/", "-") + slug, "Beiramar Private · Plano Piloto",
+                                  f"{e(reg['titulo'])} {reg['titulo_destaque']}", img_site(reg["imagem"]),
+                                  sub=reg["subtitulo"]))
     html += topo(r, b, par, slug)
     html += f"""<main>
 <section class="hero">
@@ -708,7 +742,10 @@ def pagina_empreendimento(x, lp=False):
         tit_cont = f"Receba as informações do <em>{e(x['nome'])}</em>."
         conhecer_reg = f"Conhecer {'o' if x['regiao'] == 'noroeste' else 'a'} {reg['rotulo']}"
     titulo_pagina = f"{x['nome']} | {reg['rotulo']} | Beiramar Private"
-    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"], x.get("foto_hero", "capa")),
+    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=card_og("lpamazesunside" if lp else prefixo().replace("/", "-") + x["slug"],
+                                  f"Beiramar Private · {reg['rotulo']}", e(x["nome"]),
+                                  img_emp(x["slug"], x.get("foto_hero", "capa")), sub=x["chamada"],
+                                  meta=" · ".join(v for v in (x["metragem"], x["dormitorios"], x.get("status", "")) if v)),
                 canonical=f"{DOMINIO}/empreendimentos/{x['slug']}/" if lp else None)
     html += topo(r, b, par, "", lp=lp)
     html += f"""<main>
@@ -821,7 +858,9 @@ def pagina_blog():
     r = raiz_rel(caminho)
     b = r
     par = ("blog/", None)
-    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", caminho)
+    html = head(r, "Blog | Beiramar Private", "Arquitetura, bairros e o mercado de alto padrão em Brasília, pelo olhar da curadoria Beiramar Private.", caminho,
+                imagem_og=card_og("blog", "Beiramar Private · Blog", "Para escolher <em>onde morar</em> em Brasília.",
+                                  img_site("noroeste"), sub="Arquitetura, bairros e o mercado de alto padrão."))
     html += topo(r, b, par, "blog", eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -853,7 +892,9 @@ def pagina_blog():
     b = r
     par = (caminho, None)
     corpo = (RAIZ / "dados" / "blog" / f"{POST_SLUG}.html").read_text(encoding="utf-8")
-    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, caminho, imagem_og=img_site("quadra-500-b"))
+    html = head(r, f"{POST_TITULO} | Beiramar Private", POST_RESUMO, caminho, imagem_og=card_og("blog-arquitetura-de-brasilia", "Beiramar Private · Blog",
+                                                                                  "Brasília: onde a arquitetura não apenas abriga, ela <em>emociona</em>.",
+                                                                                  img_site("quadra-500-b")))
     html += topo(r, b, par, "blog", eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -881,7 +922,10 @@ def pagina_privacidade():
     html = head(r, t("Privacidade e cookies | Beiramar Private", "Privacy and cookies | Beiramar Private"),
                 t("Como a Beiramar Private trata os dados pessoais de quem visita o site e entra em contato, conforme a LGPD.",
                   "How Beiramar Private handles the personal data of website visitors and contacts, under Brazil’s LGPD."),
-                caminho, par=par)
+                caminho, par=par,
+                imagem_og=card_og(t("privacidade", "en-privacidade"), "Beiramar Private",
+                                  t("Privacidade e <em>cookies</em>.", "Privacy and <em>cookies</em>."), img_site("sobre"),
+                                  sub=t("Como tratamos os seus dados, conforme a LGPD.", "How we handle your data, under Brazil’s LGPD.")))
     html += topo(r, b, par, eco_local=False)
     html += f"""<main>
 <section class="pagina-topo"><div class="wrap">
@@ -971,6 +1015,8 @@ def main():
     (RAIZ / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
     (RAIZ / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {DOMINIO}/sitemap.xml\n", encoding="utf-8")
     (RAIZ / ".nojekyll").write_text("")
+    (RAIZ / "dados" / "cards-compartilhamento.json").write_text(
+        json.dumps(list(CARDS.values()), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"{len(geradas)} páginas geradas (pt + en), {len(redirs)} redirecionamentos.")
 
 
