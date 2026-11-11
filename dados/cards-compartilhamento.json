@@ -1,0 +1,353 @@
+[
+ {
+  "arquivo": "inicio",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Plano Piloto",
+  "titulo": "Viver bem é uma decisão. Nós cuidamos do <em>endereço</em>.",
+  "sub": "Imóveis de alto padrão no Noroeste e no Sudoeste.",
+  "meta": "",
+  "foto": "imagens/site/home-hero.webp"
+ },
+ {
+  "arquivo": "noroeste",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Plano Piloto",
+  "titulo": "Noroeste: um novo padrão de <em>viver</em> Brasília.",
+  "sub": "Curadoria Private de imóveis selecionados no bairro mais desejado do Plano Piloto.",
+  "meta": "",
+  "foto": "imagens/site/noroeste.webp"
+ },
+ {
+  "arquivo": "quadra-500",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Plano Piloto",
+  "titulo": "Quadra 500: um endereço que <em>não se repete</em>.",
+  "sub": "Curadoria Private de imóveis selecionados na última faixa do Sudoeste, de frente para o verde.",
+  "meta": "",
+  "foto": "imagens/site/quadra-500.webp"
+ },
+ {
+  "arquivo": "yard",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Yard",
+  "sub": "Pronto para <em>morar</em>, do térreo à cobertura.",
+  "meta": "110 a 224 m² · 3 quartos · Pronto para morar",
+  "foto": "imagens/empreendimentos/yard/capa.webp"
+ },
+ {
+  "arquivo": "azzure",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Azzure",
+  "sub": "Quatro suítes, duas varandas e <em>luz</em> natural em todos os ambientes.",
+  "meta": "213 a 481 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/azzure/capa.webp"
+ },
+ {
+  "arquivo": "singular",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Singular",
+  "sub": "Morar no Noroeste <em>sem esperar</em> obra.",
+  "meta": "152 a 336 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/singular/02.webp"
+ },
+ {
+  "arquivo": "season",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Season",
+  "sub": "Uma das <em>últimas</em> unidades prontas em um bairro quase esgotado.",
+  "meta": "145 a 333 m² · 3 ou 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/season/02.webp"
+ },
+ {
+  "arquivo": "amaze-sunside",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Amaze Sunside",
+  "sub": "Compacto na metragem, <em>amplo</em> em soluções.",
+  "meta": "31 a 132 m² · Studios, 1 e 2 quartos · Em obras",
+  "foto": "imagens/empreendimentos/amaze-sunside/capa.webp"
+ },
+ {
+  "arquivo": "biome",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Biome Studios",
+  "sub": "Para viver a natureza e morar com <em class=\"sem-quebra\">bem-estar</em>.",
+  "meta": "28 a 48 m² · Studios, 1 e 2 quartos · Entrega próxima",
+  "foto": "imagens/empreendimentos/biome/capa.webp"
+ },
+ {
+  "arquivo": "icon",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Icon",
+  "sub": "Onde o verde deixa de ser paisagem e passa a ser <em>arquitetura</em>.",
+  "meta": "190 a 637 m² · 4 suítes · Lançamento",
+  "foto": "imagens/empreendimentos/icon/capa.webp"
+ },
+ {
+  "arquivo": "parque-alvorada",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Alvorada",
+  "sub": "Privacidade, verde e <em>penthouses</em> com piscina privativa.",
+  "meta": "230 a 621 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/parque-alvorada/capa.webp"
+ },
+ {
+  "arquivo": "parque-cidade",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Cidade",
+  "sub": "Rooftops duplex com <em>elevador</em> privativo.",
+  "meta": "122 a 395 m² · 3 e 4 suítes · Obras avançadas",
+  "foto": "imagens/empreendimentos/parque-cidade/capa.webp"
+ },
+ {
+  "arquivo": "parque-esplanada",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Esplanada",
+  "sub": "Amplitude e <em>elegância</em> de frente para o verde.",
+  "meta": "167 a 367 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/parque-esplanada/capa.webp"
+ },
+ {
+  "arquivo": "parque-itamaraty",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Itamaraty",
+  "sub": "Conforto <em>familiar</em> em endereço privilegiado.",
+  "meta": "172 a 548 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/parque-itamaraty/capa.webp"
+ },
+ {
+  "arquivo": "parque-monumental",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Monumental",
+  "sub": "Para quem busca <em>exclusividade</em> e legado.",
+  "meta": "199 a 665 m² · 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/parque-monumental/capa.webp"
+ },
+ {
+  "arquivo": "parque-nacional",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Nacional",
+  "sub": "Rooftops com <em>piscina</em> e espaço gourmet privativos.",
+  "meta": "146 a 392 m² · 4 suítes · Em obras",
+  "foto": "imagens/empreendimentos/parque-nacional/capa.webp"
+ },
+ {
+  "arquivo": "parque-planalto",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Planalto",
+  "sub": "Suítes amplas e <em>varandas</em> generosas.",
+  "meta": "132 a 370 m² · 3 e 4 suítes · Pronto para morar",
+  "foto": "imagens/empreendimentos/parque-planalto/capa.webp"
+ },
+ {
+  "arquivo": "privacidade",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private",
+  "titulo": "Privacidade e <em>cookies</em>.",
+  "sub": "Como tratamos os seus dados, conforme a LGPD.",
+  "meta": "",
+  "foto": "imagens/site/sobre.webp"
+ },
+ {
+  "arquivo": "en-inicio",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Brasília, Brazil",
+  "titulo": "Living well is a decision. We take care of the <em>address</em>.",
+  "sub": "Luxury homes in Noroeste and Sudoeste.",
+  "meta": "",
+  "foto": "imagens/site/home-hero.webp"
+ },
+ {
+  "arquivo": "en-noroeste",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Plano Piloto",
+  "titulo": "Noroeste: a new standard of <em>living</em> in Brasília.",
+  "sub": "A Private selection of homes in the most sought-after neighborhood of Brasília's Plano Piloto.",
+  "meta": "",
+  "foto": "imagens/site/noroeste.webp"
+ },
+ {
+  "arquivo": "en-quadra-500",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Plano Piloto",
+  "titulo": "Quadra 500: an address that <em>cannot be repeated</em>.",
+  "sub": "A Private selection of homes on the last strip of Sudoeste, facing the green.",
+  "meta": "",
+  "foto": "imagens/site/quadra-500.webp"
+ },
+ {
+  "arquivo": "en-yard",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Yard",
+  "sub": "Ready to <em>move in</em>, from the ground floor to the penthouse.",
+  "meta": "110 to 224 m² · 3 bedrooms · Ready to move in",
+  "foto": "imagens/empreendimentos/yard/capa.webp"
+ },
+ {
+  "arquivo": "en-azzure",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Azzure",
+  "sub": "Four suites, two balconies and natural <em>light</em> in every room.",
+  "meta": "213 to 481 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/azzure/capa.webp"
+ },
+ {
+  "arquivo": "en-singular",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Singular",
+  "sub": "Live in Noroeste <em>without waiting</em> for construction.",
+  "meta": "152 to 336 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/singular/02.webp"
+ },
+ {
+  "arquivo": "en-season",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Season",
+  "sub": "One of the <em>last</em> ready units in a neighborhood that is almost sold out.",
+  "meta": "145 to 333 m² · 3 or 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/season/02.webp"
+ },
+ {
+  "arquivo": "en-amaze-sunside",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Amaze Sunside",
+  "sub": "Compact in size, <em>generous</em> in solutions.",
+  "meta": "31 to 132 m² · Studios, 1 and 2 bedrooms · Under construction",
+  "foto": "imagens/empreendimentos/amaze-sunside/capa.webp"
+ },
+ {
+  "arquivo": "en-biome",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Biome Studios",
+  "sub": "Live close to nature, at home in <em>well-being</em>.",
+  "meta": "28 to 48 m² · Studios, 1 and 2 bedrooms · Delivery soon",
+  "foto": "imagens/empreendimentos/biome/capa.webp"
+ },
+ {
+  "arquivo": "en-icon",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Icon",
+  "sub": "Where greenery stops being scenery and becomes <em>architecture</em>.",
+  "meta": "190 to 637 m² · 4 suites · New launch",
+  "foto": "imagens/empreendimentos/icon/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-alvorada",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Alvorada",
+  "sub": "Privacy, greenery and <em>penthouses</em> with private pools.",
+  "meta": "230 to 621 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/parque-alvorada/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-cidade",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Cidade",
+  "sub": "Duplex rooftops with a private <em>elevator</em>.",
+  "meta": "122 to 395 m² · 3 and 4 suites · Advanced construction",
+  "foto": "imagens/empreendimentos/parque-cidade/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-esplanada",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Esplanada",
+  "sub": "Space and <em>elegance</em> facing the green.",
+  "meta": "167 to 367 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/parque-esplanada/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-itamaraty",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Itamaraty",
+  "sub": "<em>Family</em> comfort at a privileged address.",
+  "meta": "172 to 548 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/parque-itamaraty/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-monumental",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Monumental",
+  "sub": "For those who seek <em>exclusivity</em> and legacy.",
+  "meta": "199 to 665 m² · 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/parque-monumental/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-nacional",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Nacional",
+  "sub": "Rooftops with a private <em>pool</em> and gourmet area.",
+  "meta": "146 to 392 m² · 4 suites · Under construction",
+  "foto": "imagens/empreendimentos/parque-nacional/capa.webp"
+ },
+ {
+  "arquivo": "en-parque-planalto",
+  "idioma": "en",
+  "rotulo": "Beiramar Private · Quadra 500",
+  "titulo": "Parque Planalto",
+  "sub": "Spacious suites and generous <em>balconies</em>.",
+  "meta": "132 to 370 m² · 3 and 4 suites · Ready to move in",
+  "foto": "imagens/empreendimentos/parque-planalto/capa.webp"
+ },
+ {
+  "arquivo": "en-privacidade",
+  "idioma": "en",
+  "rotulo": "Beiramar Private",
+  "titulo": "Privacy and <em>cookies</em>.",
+  "sub": "How we handle your data, under Brazil’s LGPD.",
+  "meta": "",
+  "foto": "imagens/site/sobre.webp"
+ },
+ {
+  "arquivo": "lpamazesunside",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Noroeste",
+  "titulo": "Amaze Sunside",
+  "sub": "Compacto na metragem, <em>amplo</em> em soluções.",
+  "meta": "31 a 132 m² · Studios, 1 e 2 quartos · Em obras",
+  "foto": "imagens/empreendimentos/amaze-sunside/capa.webp"
+ },
+ {
+  "arquivo": "blog",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Blog",
+  "titulo": "Para escolher <em>onde morar</em> em Brasília.",
+  "sub": "Arquitetura, bairros e o mercado de alto padrão.",
+  "meta": "",
+  "foto": "imagens/site/noroeste.webp"
+ },
+ {
+  "arquivo": "blog-arquitetura-de-brasilia",
+  "idioma": "pt",
+  "rotulo": "Beiramar Private · Blog",
+  "titulo": "Brasília: onde a arquitetura não apenas abriga, ela <em>emociona</em>.",
+  "sub": "",
+  "meta": "",
+  "foto": "imagens/site/quadra-500-b.webp"
+ }
+]
