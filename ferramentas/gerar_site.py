@@ -708,12 +708,12 @@ def pagina_empreendimento(x, lp=False):
         tit_cont = f"Receba as informações do <em>{e(x['nome'])}</em>."
         conhecer_reg = f"Conhecer {'o' if x['regiao'] == 'noroeste' else 'a'} {reg['rotulo']}"
     titulo_pagina = f"{x['nome']} | {reg['rotulo']} | Beiramar Private"
-    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"]),
+    html = head(r, titulo_pagina, desc_meta, caminho, par=None if lp else par, imagem_og=img_emp(x["slug"], x.get("foto_hero", "capa")),
                 canonical=f"{DOMINIO}/empreendimentos/{x['slug']}/" if lp else None)
     html += topo(r, b, par, "", lp=lp)
     html += f"""<main>
 <section class="hero emp-hero">
-  {foto_faixas(r + img_emp(x['slug']), r + img_emp(x['slug'], p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
+  {foto_faixas(r + img_emp(x['slug'], x.get('foto_hero', 'capa')), r + img_emp(x['slug'], x.get('foto_hero', 'capa'), p=True), f"{x['nome']}, {reg['nome']}", 'hero__midia', eager=True)}
   <div class="wrap" style="position:relative;z-index:2">
     <div class="hero__conteudo">
       <span class="rotulo rotulo--linha">Beiramar Private · {e(reg['rotulo'])}</span>
