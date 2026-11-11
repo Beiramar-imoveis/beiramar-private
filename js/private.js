@@ -14,7 +14,7 @@
     erro: 'Não conseguimos enviar agora. Tente de novo ou ',
     erroLink: 'fale pelo WhatsApp', ola: 'Olá! Sou ', interesse: 'Tenho interesse em: ', busca: 'Busco: '
   };
-  var WHATS = 'https://wa.me/556131426671?text=';
+  var WHATS = 'https://wa.me/556132621200?text=';
 
   /* ---------- cabeçalho e menu ---------- */
   var topo = document.getElementById('topo');

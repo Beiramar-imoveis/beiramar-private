@@ -4,7 +4,10 @@
     "Pronto para morar": "Ready to move in",
     "Obras avançadas": "Advanced construction",
     "Obras em andamento": "Under construction",
-    "Pré-lançamento": "Pre-launch"
+    "Pré-lançamento": "Pre-launch",
+    "Em obras": "Under construction",
+    "Entrega próxima": "Delivery soon",
+    "Lançamento": "New launch"
   },
   "rotulos_assinatura": {
     "Arquitetura": "Architecture",
